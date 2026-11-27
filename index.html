@@ -319,6 +319,54 @@ a.pl:hover,a.ldn:hover,.ldr li a:hover{text-decoration:underline}
 .nowc.next .ha.h{color:#5BD98C}.nowc.next .ha.a{color:#F4C542}
 .seas{display:inline-block;vertical-align:middle;font:600 .9rem var(--body);background:var(--pitch);color:#fff;border-radius:99px;padding:.2rem .8rem;margin-left:.5rem;letter-spacing:0}
 .seas:empty{display:none}
+.pitches{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;max-width:1000px}
+.hp{margin:0}
+.hp figcaption{display:flex;align-items:center;gap:.5rem;font:800 1rem var(--display);margin-bottom:.5rem}
+.hp figcaption i{display:inline-block;width:14px;height:14px;border-radius:50%}
+.hp .k1{background:#2B3A55}.hp .k2{background:#D7262D}
+.hp svg{width:100%;height:auto;display:block;border-radius:22px;box-shadow:0 14px 30px rgba(0,0,0,.18)}
+.pitchkey{margin:.6rem 0 1.2rem}
+@media (max-width:760px){.pitches{grid-template-columns:1fr}}
+.pf{fill:#1F7A3E}.pstr{fill:#238746}.pl *{fill:none;stroke:rgba(255,255,255,.55);stroke-width:3}
+.pr{fill:#fff;font:800 22px var(--display);text-anchor:middle}
+.pn{fill:#fff;font:700 19px var(--body);text-anchor:middle}
+.pnb{fill:rgba(0,0,0,.55)}
+.pp{fill:rgba(255,255,255,.85);font:800 15px var(--display);text-anchor:middle}
+.ps{fill:#3A2A00;font:800 18px var(--body);text-anchor:middle}
+.pg{fill:#16100F;font:800 15px var(--body);text-anchor:middle}
+.pa{fill:#fff;font:800 12px var(--body);text-anchor:middle}
+.pkey{display:flex;flex-wrap:wrap;gap:1rem;font-weight:600;font-size:.9rem;margin-bottom:.6rem}
+.pkey i{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:.4rem;vertical-align:-2px}
+.pkey .k1{background:#2B3A55}.pkey .k2{background:#D7262D}
+.pitch2 figcaption{margin-top:.5rem}
+.lud summary{cursor:pointer;font-weight:600;margin-bottom:.8rem}
+#troSum{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.tbig{font-size:1.1rem;margin-right:.4rem}.tbig b{font:800 2.6rem var(--display);color:var(--accent);margin-right:.3rem;vertical-align:-6px}
+.tchip{background:var(--pitch);color:#fff;border-radius:99px;padding:.25rem .8rem;font-weight:600}
+.vit{border:none;background:none;box-shadow:none;padding:0}
+.tfeat{position:relative;overflow:hidden;display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:center;background:radial-gradient(circle at 18% 30%,#4A3A1A 0,#1B1514 60%);color:#FBF8F6;border-radius:24px;padding:1.6rem 2rem;margin-bottom:1.2rem;border:2px solid #6B4A2B}
+.tfeat h3{font:800 clamp(1.5rem,4vw,2.3rem)/1.1 var(--display);margin:.4rem 0}
+.tfeat p{margin:0;color:#E8DAD6}
+.tfi{position:relative;z-index:1}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.2rem}
+.tcase{position:relative;overflow:hidden;background:linear-gradient(180deg,#2A201E 0,#16100F 100%);border:2px solid #3A2C28;border-radius:22px;padding:1.2rem 1rem 1rem;display:flex;flex-direction:column;align-items:center;color:#FBF8F6;min-height:300px}
+.tcase::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.07) 0 30%,transparent 30%);pointer-events:none}
+.tglow{position:absolute;left:50%;top:18%;width:220px;height:220px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,rgba(245,197,66,.35) 0,transparent 65%);pointer-events:none}
+.tcase.silver .tglow{background:radial-gradient(circle,rgba(220,228,236,.3) 0,transparent 65%)}
+.tfeat .tglow{left:120px;top:50%;transform:translate(-50%,-50%);width:300px;height:300px}
+.tci{position:relative;z-index:1;margin-top:.8rem;filter:drop-shadow(0 10px 14px rgba(0,0,0,.6))}
+.tsvg{display:block}
+@media (prefers-reduced-motion:no-preference){.tci .tsvg,.tfi .tsvg{animation:tfloat 4s ease-in-out infinite}@keyframes tfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}}
+.tped{width:70%;height:14px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.6),transparent 70%);margin-top:.2rem}
+.tplq{position:relative;z-index:1;margin-top:auto;background:linear-gradient(180deg,#C9A04A,#8B6A2A);color:#2A1A08;border-radius:10px;padding:.45rem .8rem;text-align:center;width:100%;box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.tcase.silver .tplq{background:linear-gradient(180deg,#D7DDE3,#9AA3AD);color:#1F262D}
+.tplq b{font:800 .95rem/1.25 var(--display)}
+.tstars{margin-top:.2rem;letter-spacing:.1rem}.tstars i{font-style:normal;color:#7A1A1E}
+.tplat{position:absolute;z-index:2;top:.8rem;left:.8rem;background:var(--accent);color:#fff;font:800 .72rem var(--display);padding:.15rem .6rem;border-radius:99px}
+.tfeat .tplat{position:static;display:inline-block}
+.tcount{position:absolute;z-index:2;top:.7rem;right:.8rem;background:#F4C542;color:#3A2A00;font:800 1.1rem var(--display);padding:.1rem .6rem;border-radius:12px}
+.tfeat .tcount{position:static;display:inline-block;margin-top:.6rem}
+@media (max-width:640px){.tfeat{grid-template-columns:1fr;text-align:center;justify-items:center;padding:1.4rem}.tfeat .tglow{left:50%;top:30%}}
 .tlg{width:28px;height:28px;object-fit:contain;flex:none;display:inline-grid;place-items:center}
 .tlx{border-radius:50%;background:var(--line);font:800 .8rem var(--display);color:var(--muted)}
 .tt{display:inline-flex;align-items:center;gap:.6rem}
@@ -639,6 +687,34 @@ function histBox(rv,ex){var ms=hist(rv,ex);if(!ms.length)return'<p class="cmeta 
   return'<div class="hbx"><p class="hsum"><b>'+ms.length+'</b> partido'+(ms.length>1?'s':'')+' · <span class="w">'+c.w+'V</span> <span class="d">'+c.d+'E</span> <span class="l">'+c.l+'D</span> · goles '+c.gf+'-'+c.ga+'</p><ul class="hl">'+ms.map(function(m){var k=rs(m),H=m.home!==false;return'<li><a href="#partido/'+m.id+'"><span class="cmeta">'+esc(fd(m))+'</span><b class="nxc">'+esc(m.comp)+'</b><span class="hsc">'+esc(H?'Novaskil FC':m.rival)+' <b>'+scoreTxt(m)+'</b> '+esc(H?m.rival:'Novaskil FC')+'</span><span class="hres m-'+k+'">'+L[k]+'</span></a></li>'}).join('')+'</ul></div>'}
 var DET=null,detP=null;
 function loadDet(){if(DET)return Promise.resolve(DET);if(!detP)detP=fetch('detalles.json').then(function(r){return r.ok?r.json():{}}).catch(function(){return{}}).then(function(d){DET=d;return d});return detP}
+function pitchSvg(us,them,rvName){
+  var W=680,H=800,M=80;
+  function short(n){n=String(n);return n.length>12?n.slice(0,11)+'…':n}
+  function spread(k,i){return k===1?W/2:M+(W-2*M)*i/(k-1)}
+  function zz(n,i){return n>=5?(i%2?-30:30):0}
+  function marker(x,y,p,side){var r=p.r,ring=r?rc(r):'#7A7270',fill=side==='us'?'#D7262D':'#2B3A55';
+    var s='<g class="pm"><title>'+esc(p.n)+(p.pos?' · '+esc(p.pos):'')+(r?' · nota '+r.toFixed(1):'')+(p.g?' · '+p.g+' gol'+(p.g>1?'es':''):'')+(p.a?' · '+p.a+' asist.':'')+(p.mvp?' · MVP':'')+'</title>';
+    s+='<circle cx="'+x+'" cy="'+y+'" r="33" fill="'+ring+'"/><circle cx="'+x+'" cy="'+y+'" r="27" fill="'+fill+'"/>';
+    s+='<text x="'+x+'" y="'+(y+9)+'" class="pr">'+(r?r.toFixed(1):'-')+'</text>';
+    if(p.mvp)s+='<g transform="translate('+(x+28)+','+(y-28)+')"><circle r="15" fill="#F4C542"/><text y="6" class="ps">★</text></g>';
+    if(p.g)s+='<g transform="translate('+(x-28)+','+(y-28)+')"><circle r="15" fill="#fff"/><text y="6" class="pg">'+(p.g>1?p.g+'⚽':'⚽')+'</text></g>';
+    if(p.a)s+='<g transform="translate('+(x+30)+','+(y+22)+')"><circle r="13" fill="#1E8A4C"/><text y="5" class="pa">'+p.a+'A</text></g>';
+    s+='<rect x="'+(x-74)+'" y="'+(y+38)+'" width="148" height="32" rx="16" class="pnb"/><text x="'+x+'" y="'+(y+60)+'" class="pn">'+esc(short(p.n))+'</text>';
+    return s+'</g>'}
+  function half(rows,ys,side){
+    var o='<rect width="'+W+'" height="'+H+'" rx="26" class="pf"/>';
+    for(var i=0;i<6;i++)o+='<rect x="0" y="'+(i*H/6)+'" width="'+W+'" height="'+(H/12)+'" class="pstr"/>';
+    o+='<g class="pl"><rect x="24" y="24" width="'+(W-48)+'" height="'+(H-48)+'" rx="6"/><path d="M'+(W/2-80)+' 24a80 80 0 0 0 160 0"/><rect x="160" y="'+(H-170)+'" width="360" height="146"/><rect x="250" y="'+(H-80)+'" width="180" height="56"/><path d="M'+(W/2-60)+' '+(H-170)+'a70 70 0 0 1 120 0"/></g>';
+    rows.forEach(function(r,ri){r.forEach(function(p,i){o+=marker(spread(r.length,i),ys[ri]+zz(r.length,i),p,side)})});
+    return o}
+  var RW={POR:0,DFC:1,CAI:2,MC:2,CAD:2,MCO:3,DC:4},IN={CAI:0,MC:1,CAD:2},ur=[[],[],[],[],[]];
+  us.forEach(function(p){ur[RW[p.pos]===undefined?2:RW[p.pos]].push(p)});
+  ur[2].sort(function(a,b){return(IN[a.pos]===undefined?1:IN[a.pos])-(IN[b.pos]===undefined?1:IN[b.pos])});
+  var LR={g:0,d:1,m:2,f:3},tr=[[],[],[],[]];
+  them.forEach(function(p){tr[LR[p.line]===undefined?2:LR[p.line]].push(p)});
+  function fig(title,cls,svg,n){return'<figure class="hp"><figcaption><i class="'+cls+'"></i>'+title+'</figcaption>'+(n?'<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Alineación de '+title+'">'+svg+'</svg>':'<p class="cmeta">Sin datos de alineación.</p>')+'</figure>'}
+  return'<div class="pitches">'+fig('Novaskil FC','k2',half(ur,[715,590,455,330,195],'us'),us.length)+fig(esc(rvName),'k1',half(tr,[715,560,390,215],'them'),them.length)+'</div><p class="cmeta pitchkey">El número es la nota del partido y el aro cambia de color según la nota · ⚽ goles · A asistencias · ★ MVP. Pasa el ratón por un jugador para ver su detalle.</p>';
+}
 window.nvMatch=function(id){
   var box=document.getElementById('mBox');if(!box)return;
   var m=state.matches.filter(function(x){return x.id===id})[0];
@@ -660,7 +736,8 @@ window.nvMatch=function(id){
     var us=(m.lu||[]).slice().sort(function(a,b){return(PO[a.p]||0)-(PO[b.p]||0)}).map(function(x){return row(x.n,x.p,x.g,x.a,x.r,m.mvp===x.n,1)}).join('');
     var LO={g:0,d:1,m:2,f:3},th=d?d.rv.slice().sort(function(a,b){return LO[a[1]]-LO[b[1]]}).map(function(x){return row(x[0],LN[x[1]]||'',x[2],x[3],x[4],x[5],0)}).join(''):'';
     var U='<div class="mlu"><h4>'+logo('Novaskil FC')+'Novaskil FC</h4>'+(us?'<ul class="lu2">'+us+'</ul>':'<p class="cmeta">Sin alineación (partido sin disputarse o sin datos).</p>')+'</div>',V='<div class="mlu"><h4>'+logo(m.rival)+esc(m.rival)+'</h4>'+(th?'<ul class="lu2">'+th+'</ul>':'<p class="cmeta">Sin datos de su alineación.</p>')+'</div>';
-    o+='<h3 class="grp">Alineaciones</h3><div class="mlus">'+(H?U+V:V+U)+'</div>';
+    var PN={POR:'POR',DFC:'DFC',CAI:'CAI',MC:'MC',CAD:'CAD',MCO:'MCO',DC:'DC'},LN2={g:'POR',d:'DEF',m:'MED',f:'DEL'};
+    if((m.lu||[]).length||d){o+='<h3 class="grp">Alineaciones</h3>'+pitchSvg((m.lu||[]).map(function(x){return{n:x.n,pos:x.p,g:x.g,a:x.a,r:x.r,mvp:m.mvp===x.n}}),d?d.rv.map(function(x){return{n:x[0],line:x[1],pos:LN2[x[1]],g:x[2],a:x[3],r:x[4],mvp:x[5]}}):[],m.rival)+'<details class="lud"><summary>Ver alineaciones en lista</summary><div class="mlus">'+(H?U+V:V+U)+'</div></details>'}
     if(!d&&!us)o='<p class="note">Este partido no se llegó a disputar, así que no tiene estadísticas.</p>';
     el.innerHTML=o;
   });
@@ -792,25 +869,35 @@ function renderMoves(){
     return'<article class="mvc '+(f?'f':'s')+'"><div class="nm"><span class="tg">'+(f?'Fichaje':(x.c?'Venta':'Salida'))+'</span><span>'+esc(isNaN(d)?x.date:d.toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'}))+'</span></div><h3>'+esc(x.p)+'</h3>'+(f&&x.pos?'<p class="ps">Juega de <b>'+esc(x.pos)+'</b></p>':'')+'<p>'+(x.c?(f?'Llega desde ':'Se va a ')+'<b>'+esc(x.c)+'</b>':(f?'Se une a Novaskil FC':'Sale de Novaskil FC'))+'</p>'+(x.n?'<p class="nt">'+esc(x.n)+'</p>':'')+(canEdit?'<button class="xbtn" data-mv-del="'+x.id+'">Borrar</button>':'')+'</article>';
   }).join('')||'<p class="lead">Todavía no hay movimientos de jugadores.</p>';
 }
+var TROID=0;
 function troIcon(k,h){
-  var c={cup:['#F5C542','#E0A81E','#8B5E0B'],cup2:['#D3DAE2','#A5AFBB','#5E6874'],bolt:['#F5C542','#E0A81E','#8B5E0B'],globe:['#F5C542','#E0A81E','#1E8A4C']}[k]||['#F5C542','#E0A81E','#8B5E0B'],b;
-  if(k==='globe')b='<circle cx="30" cy="22" r="16" fill="'+c[0]+'"/><path d="M30 6c-8 8-8 24 0 32M30 6c8 8 8 24 0 32M14 22h32" fill="none" stroke="'+c[1]+'" stroke-width="2"/><path d="M21 38c3 8 5 14 3 22h12c-2-8 0-14 3-22z" fill="'+c[0]+'"/><rect x="16" y="60" width="28" height="7" rx="2" fill="'+c[2]+'"/><rect x="12" y="67" width="36" height="8" rx="2" fill="'+c[1]+'"/>';
-  else{b='<path d="M14 8h32v18c0 11-7 19-16 19S14 37 14 26z" fill="'+c[0]+'"/><path d="M14 14H6c0 12 4 18 11 20M46 14h8c0 12-4 18-11 20" fill="none" stroke="'+c[0]+'" stroke-width="4" stroke-linecap="round"/><path d="M20 12h4v20c-3-3-4-8-4-12z" fill="#fff" opacity=".4"/><rect x="27" y="44" width="6" height="14" fill="'+c[1]+'"/><path d="M18 58h24l3 10H15z" fill="'+c[1]+'"/><rect x="12" y="68" width="36" height="8" rx="2" fill="'+c[2]+'"/>';
-    if(k==='bolt')b+='<path d="M33 12l-9 15h7l-4 13 12-17h-8z" fill="#fff"/>';
-    if(k==='cup2')b+='<path d="M30 14l2.6 5.5 6 .8-4.4 4.1 1.1 6-5.3-2.9-5.3 2.9 1.1-6-4.4-4.1 6-.8z" fill="#fff" opacity=".9"/>'}
-  return'<svg viewBox="0 0 60 80" height="'+h+'" aria-hidden="true">'+b+'</svg>';
+  var id='tg'+(TROID++),silver=k==='cup2';
+  var g=silver?['#F4F7FA','#C3CBD4','#8A949F','#5E6874']:['#FFF1B8','#F5C542','#D49A12','#8B5E0B'];
+  var d='<defs><linearGradient id="'+id+'" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="'+g[2]+'"/><stop offset=".35" stop-color="'+g[0]+'"/><stop offset=".6" stop-color="'+g[1]+'"/><stop offset="1" stop-color="'+g[3]+'"/></linearGradient><linearGradient id="'+id+'b" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3A2A22"/><stop offset="1" stop-color="#1B1210"/></linearGradient></defs>';
+  var F='url(#'+id+')',b;
+  if(k==='globe'){
+    b='<circle cx="30" cy="22" r="17" fill="'+F+'"/><path d="M13 22h34M30 5c-9 9-9 25 0 34M30 5c9 9 9 25 0 34M16 13c8 4 20 4 28 0M16 31c8-4 20-4 28 0" fill="none" stroke="'+g[3]+'" stroke-width="1.6" opacity=".7"/><path d="M20 38c4 7 6 13 4 20h12c-2-7 0-13 4-20-6 3-14 3-20 0z" fill="'+F+'"/>';
+  }else{
+    b='<path d="M14 7h32v19c0 11-7 19-16 19S14 37 14 26z" fill="'+F+'"/><path d="M14 13H6c0 12 4 18 11 20M46 13h8c0 12-4 18-11 20" fill="none" stroke="'+F+'" stroke-width="4" stroke-linecap="round"/><path d="M19 10h4v21c-3-4-4-9-4-14z" fill="#fff" opacity=".45"/><rect x="27" y="44" width="6" height="12" fill="'+F+'"/><path d="M19 55h22l2 4H17z" fill="'+F+'"/>';
+    if(k==='bolt')b+='<path d="M33 11l-9 15h7l-4 13 12-17h-8z" fill="#fff" opacity=".95"/>';
+    else b+='<path d="M30 13l2.6 5.5 6 .8-4.4 4.1 1.1 6-5.3-2.9-5.3 2.9 1.1-6-4.4-4.1 6-.8z" fill="#fff" opacity=".85"/>';
+  }
+  b+='<path d="M13 59h34l3 9H10z" fill="url(#'+id+'b)"/><rect x="8" y="68" width="44" height="9" rx="2" fill="url(#'+id+'b)"/><rect x="20" y="70.5" width="20" height="4" rx="1" fill="'+F+'" opacity=".9"/>';
+  return'<svg class="tsvg" viewBox="0 0 60 80" height="'+h+'" aria-hidden="true">'+d+b+'</svg>';
 }
 function renderTrophies(){
-  var ts=state.trophies||[],tot=ts.reduce(function(a,t){return a+(t.c||0)},0),ord=['PS5','PS4'],gr={};
-  document.getElementById('troSum').textContent=tot?tot+(tot>1?' trofeos':' trofeo')+' en la vitrina':'';
-  ts.forEach(function(t){(gr[t.p]=gr[t.p]||[]).push(t)});
-  var ks=Object.keys(gr).sort(function(a,b){return(ord.indexOf(a)<0?9:ord.indexOf(a))-(ord.indexOf(b)<0?9:ord.indexOf(b))});
-  document.getElementById('troCase').innerHTML=ks.map(function(g){
-    return'<div class="shelf"><span class="sp">'+esc(g)+'</span><div class="srow">'+gr[g].map(function(t){
-      var n=Math.min(t.c||1,6),ic='';for(var i=0;i<n;i++)ic+=troIcon(t.k,n>1?64:96);
-      return'<div class="tro"><div class="ti">'+ic+'</div><div class="tn">'+(t.c>1?'<b class="tx">x'+t.c+'</b> ':'')+esc(t.n)+'</div>'+(canEdit?'<div class="ta"><button class="xbtn" data-tro-inc="'+t.id+'">+1</button><button class="xbtn" data-tro-del="'+t.id+'">Borrar</button></div>':'')+'</div>';
-    }).join('')+'</div></div>';
-  }).join('')||'<p class="lead">Aún no hay trofeos en la vitrina.</p>';
+  var ts=state.trophies||[],tot=ts.reduce(function(a,t){return a+(t.c||0)},0),ord=['PS5','PS4'];
+  var byP={};ts.forEach(function(t){byP[t.p]=(byP[t.p]||0)+(t.c||1)});
+  var ps=Object.keys(byP).sort(function(a,b){return(ord.indexOf(a)<0?9:ord.indexOf(a))-(ord.indexOf(b)<0?9:ord.indexOf(b))});
+  document.getElementById('troSum').innerHTML=tot?'<span class="tbig"><b>'+tot+'</b> títulos</span>'+ps.map(function(p){return'<span class="tchip">'+esc(p)+' <b>'+byP[p]+'</b></span>'}).join(''):'';
+  var feat=ts.filter(function(t){return t.k==='globe'}),rest=ts.filter(function(t){return t.k!=='globe'});
+  rest.sort(function(a,b){return(ord.indexOf(a.p)-ord.indexOf(b.p))||((b.c||1)-(a.c||1))});
+  function stars(n){var s='';for(var i=0;i<Math.min(n,10);i++)s+='<i>★</i>';return n>1?'<div class="tstars" aria-label="'+n+' veces">'+s+'</div>':''}
+  function edit(t){return canEdit?'<div class="ta"><button class="xbtn" data-tro-inc="'+t.id+'">+1</button><button class="xbtn" data-tro-del="'+t.id+'">Borrar</button></div>':''}
+  var h='';
+  feat.forEach(function(t){h+='<article class="tfeat"><div class="tglow"></div><div class="tfi">'+troIcon(t.k,190)+'</div><div class="tft"><span class="tplat">'+esc(t.p)+'</span><h3>'+esc(t.n)+'</h3><p>Campeones del mundo: Novaskil FC fue el mejor equipo de '+esc(t.p)+'.</p>'+(t.c>1?'<b class="tcount">x'+t.c+'</b>':'')+edit(t)+'</div></article>'});
+  h+='<div class="tgrid">'+rest.map(function(t){return'<article class="tcase '+(t.k==='cup2'?'silver':'gold')+'"><span class="tplat">'+esc(t.p)+'</span>'+(t.c>1?'<b class="tcount">x'+t.c+'</b>':'')+'<div class="tglow"></div><div class="tci">'+troIcon(t.k,150)+'</div><div class="tped"></div><div class="tplq"><b>'+esc(t.n)+'</b>'+stars(t.c||1)+'</div>'+edit(t)+'</article>'}).join('')+'</div>';
+  document.getElementById('troCase').innerHTML=ts.length?h:'<p class="lead">Aún no hay trofeos en la vitrina.</p>';
 }
 var SL=['Portero','Defensa 1','Defensa 2','Defensa 3','Carrilero izq.','MC 1','MC 2','Carrilero der.','MCO','DC 1','DC 2'];
 function nick(g){return(state.nicks||{})[g]||g.replace(/[_\-]+$/,'').replace(/[_\-]*\d+$/,'').replace(/[_\-]+$/,'')}
