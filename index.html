@@ -671,7 +671,7 @@ function scLine(m,p){var A='<span class="tm">'+logo('Novaskil FC')+'<span>Novask
   var L=away?B:A,R=(away?A:B).replace('class="tm"','class="tm tr"');
   return'<div class="sc'+(away?' away':'')+'">'+L+'<strong>'+(p?(away?m.ga+' - '+m.gf:m.gf+' - '+m.ga):'vs')+'</strong>'+R+'</div>'}
 function card(m){
-  var p=pl(m),k=p?rs(m):'u',h='<article class="match m-'+k+'"><div class="mt"><span>'+esc(fd(m))+'</span><span class="mtr">'+haTag(m)+'<b>'+esc(m.comp)+'</b></span></div>'+scLine(m,p)+'<div class="mini"><span class="tagr">'+(p?T[k]+(m.wo&&!(m.lu&&m.lu.length)?' (sin disputarse)':''):(m.date<TODAY?'Pendiente de jugar':'Próximo partido'))+'</span>'+(p&&m.mvp?'<a class="mvp" href="#jugador/'+encodeURIComponent(m.mvp)+'">⭐ MVP: '+esc(m.mvp)+'</a>':'');
+  var p=pl(m),k=p?rs(m):'u',h='<article class="match m-'+k+'"><div class="mt"><span>'+esc(fd(m))+'</span><span class="mtr">'+haTag(m)+'<b>'+esc(m.comp)+'</b></span></div>'+scLine(m,p)+'<div class="mini"><span class="tagr">'+(p?T[k]:(m.date<TODAY?'Pendiente de jugar':'Próximo partido'))+'</span>'+(p&&m.mvp?'<a class="mvp" href="#jugador/'+encodeURIComponent(m.mvp)+'">⭐ MVP: '+esc(m.mvp)+'</a>':'');
   if(canEdit){
     if(!p)h+='<input type="number" min="0" max="99" aria-label="Goles Novaskil" data-gf="'+m.id+'"><input type="number" min="0" max="99" aria-label="Goles rival" data-ga="'+m.id+'"><button class="btn main" style="padding:.3rem .9rem" data-act="res" data-id="'+m.id+'">Guardar</button>';
     h+='<button class="xbtn" data-act="del" data-id="'+m.id+'">Borrar</button>';
@@ -739,10 +739,10 @@ window.nvMatch=function(id){
     function row(n,pos,g,a,r,mv,link){return'<li><span class="lp">'+pos+'</span><span class="ln">'+(link?'<a href="#jugador/'+encodeURIComponent(n)+'">'+esc(n)+'</a>':esc(n))+(mv?' <b class="mvpb">MVP</b>':'')+'</span><span class="lg">'+(g?'⚽ '+g+' ':'')+(a?'👟 '+a:'')+'</span><span class="lr" style="background:'+rc(r)+'">'+(r?r.toFixed(1):'-')+'</span></li>'}
     var us=(m.lu||[]).slice().sort(function(a,b){return(PO[a.p]||0)-(PO[b.p]||0)}).map(function(x){return row(x.n,x.p,x.g,x.a,x.r,m.mvp===x.n,1)}).join('');
     var LO={g:0,d:1,m:2,f:3},th=d?d.rv.slice().sort(function(a,b){return LO[a[1]]-LO[b[1]]}).map(function(x){return row(x[0],LN[x[1]]||'',x[2],x[3],x[4],x[5],0)}).join(''):'';
-    var U='<div class="mlu"><h4>'+logo('Novaskil FC')+'Novaskil FC</h4>'+(us?'<ul class="lu2">'+us+'</ul>':'<p class="cmeta">Sin alineación (partido sin disputarse o sin datos).</p>')+'</div>',V='<div class="mlu"><h4>'+logo(m.rival)+esc(m.rival)+'</h4>'+(th?'<ul class="lu2">'+th+'</ul>':'<p class="cmeta">Sin datos de su alineación.</p>')+'</div>';
+    var U='<div class="mlu"><h4>'+logo('Novaskil FC')+'Novaskil FC</h4>'+(us?'<ul class="lu2">'+us+'</ul>':'<p class="cmeta">Alineación pendiente de añadir.</p>')+'</div>',V='<div class="mlu"><h4>'+logo(m.rival)+esc(m.rival)+'</h4>'+(th?'<ul class="lu2">'+th+'</ul>':'<p class="cmeta">Sin datos de su alineación.</p>')+'</div>';
     var PN={POR:'POR',DFC:'DFC',CAI:'CAI',MC:'MC',CAD:'CAD',MCO:'MCO',DC:'DC'},LN2={g:'POR',d:'DEF',m:'MED',f:'DEL'};
     if((m.lu||[]).length||d){o+='<h3 class="grp">Alineaciones</h3>'+pitchSvg((m.lu||[]).map(function(x){return{n:x.n,pos:x.p,g:x.g,a:x.a,r:x.r,mvp:m.mvp===x.n}}),d?d.rv.map(function(x){return{n:x[0],line:x[1],pos:LN2[x[1]],g:x[2],a:x[3],r:x[4],mvp:x[5]}}):[],m.rival)+'<details class="lud"><summary>Ver alineaciones en lista</summary><div class="mlus">'+(H?U+V:V+U)+'</div></details>'}
-    if(!d&&!us)o='<p class="note">Este partido no se llegó a disputar, así que no tiene estadísticas.</p>';
+    if(!d&&!us)o='<p class="note">Todavía no hay estadísticas de este partido.</p>';
     el.innerHTML=o;
   });
 };
