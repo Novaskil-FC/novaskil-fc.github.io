@@ -367,6 +367,9 @@ a.pl:hover,a.ldn:hover,.ldr li a:hover{text-decoration:underline}
 .tcount{position:absolute;z-index:2;top:.7rem;right:.8rem;background:#F4C542;color:#3A2A00;font:800 1.1rem var(--display);padding:.1rem .6rem;border-radius:12px}
 .tfeat .tcount{position:static;display:inline-block;margin-top:.6rem}
 @media (max-width:640px){.tfeat{grid-template-columns:1fr;text-align:center;justify-items:center;padding:1.4rem}.tfeat .tglow{left:50%;top:30%}}
+.pfw{display:flex;flex-direction:column;gap:.3rem}.pfw[hidden]{display:none}
+.pfl{font-weight:600;font-size:.9rem}
+.pft button{padding:.55rem 1rem}
 .tlg{width:28px;height:28px;object-fit:contain;flex:none;display:inline-grid;place-items:center}
 .tlx{border-radius:50%;background:var(--line);font:800 .8rem var(--display);color:var(--muted)}
 .tt{display:inline-flex;align-items:center;gap:.6rem}
@@ -504,6 +507,7 @@ a.pl:hover,a.ldn:hover,.ldr li a:hover{text-decoration:underline}
       <h2 id="h-res">Partidos <span class="seas" id="seasonTag"></span></h2>
       <div class="ctl">
         <label class="sel">Elige competición<select id="compSel"><option value="all">COMPETICIONES (todas)</option><option>VPCL ONE</option><option>AFJ 5B</option><option>VPG 5A</option><option>ECL 3A</option></select></label>
+        <div class="pfw" id="pfBox" role="group" aria-label="Mostrar partidos"><span class="pfl">Mostrar</span><div class="tabs pft"><button type="button" data-pf="all" aria-pressed="true">Todos</button><button type="button" data-pf="played" aria-pressed="false">Jugados</button><button type="button" data-pf="pending" aria-pressed="false">Pendientes</button></div></div>
         <div class="dayw" id="dayBox"><label class="sel">Buscar por día<input type="date" id="dayFilter"></label><button type="button" class="xbtn" id="dayClear">Quitar filtro</button></div>
         <div class="tabs" role="group" aria-label="Vista"><button type="button" data-view="res" aria-pressed="true">Resultados</button><button type="button" data-view="cla" aria-pressed="false">Clasificación</button><button type="button" data-view="stat" aria-pressed="false">Estadísticas</button></div>
       </div>
@@ -653,9 +657,9 @@ function rs(m){return m.gf>m.ga?'w':m.gf<m.ga?'l':'d'}
 var T={w:'Victoria',d:'Empate',l:'Derrota'},L={w:'V',d:'E',l:'D'};
 function key(m){return m.date+' '+(m.time||'00:00')}
 function fd(m){var d=new Date(m.date+'T12:00');return isNaN(d)?m.date:d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'})+(m.time?', '+m.time:'')}
-var COMPS=['VPCL ONE','AFJ 5B','VPG 5A','ECL 3A'],view='res',comp='all',day='',sortBy='m';
-function saveUI(){try{localStorage.setItem('nvui',JSON.stringify({comp:comp,view:view,day:day,sortBy:sortBy,y:window.scrollY,t:Date.now()}))}catch(e){}}
-function loadUI(){try{var u=JSON.parse(localStorage.getItem('nvui')||'null');if(u){if(u.comp==='all'||COMPS.indexOf(u.comp)>=0)comp=u.comp;if(['res','cla','stat'].indexOf(u.view)>=0)view=u.view;day=u.day||'';if(['a','g','s','v','m'].indexOf(u.sortBy)>=0)sortBy=u.sortBy;return u}}catch(e){}return null}
+var COMPS=['VPCL ONE','AFJ 5B','VPG 5A','ECL 3A'],view='res',comp='all',day='',sortBy='m',pf='all';
+function saveUI(){try{localStorage.setItem('nvui',JSON.stringify({comp:comp,view:view,day:day,sortBy:sortBy,pf:pf,y:window.scrollY,t:Date.now()}))}catch(e){}}
+function loadUI(){try{var u=JSON.parse(localStorage.getItem('nvui')||'null');if(u){if(u.comp==='all'||COMPS.indexOf(u.comp)>=0)comp=u.comp;if(['res','cla','stat'].indexOf(u.view)>=0)view=u.view;day=u.day||'';if(['a','g','s','v','m'].indexOf(u.sortBy)>=0)sortBy=u.sortBy;if(['all','played','pending'].indexOf(u.pf)>=0)pf=u.pf;return u}}catch(e){}return null}
 var ui0=loadUI();
 function avg(a){return a.length?a.reduce(function(x,y){return x+y},0)/a.length:null}
 function f1(v){return v==null?'-':v.toFixed(1)}
@@ -744,8 +748,15 @@ window.nvMatch=function(id){
 };
 function resView(mine){
   if(day)mine=mine.filter(function(m){return m.date===day});
-  var h=bar(mine.filter(pl)),up=upcoming(mine);
-  if(up.length){var d0=up.slice(0,1).concat(up.filter(function(m){return m.date===up[0].date})).filter(function(m,i,a){return a.indexOf(m)===i});var rest=up.length-d0.length;
+  var up=upcoming(mine),pend=mine.filter(function(m){return!pl(m)}).sort(function(a,b){return key(a)<key(b)?-1:1});
+  if(pf==='pending'){
+    if(!pend.length)return'<p class="lead">'+(day?'No hay partidos pendientes ese día.':'No quedan partidos pendientes.')+'</p>';
+    var hp='<p class="note" style="margin:0 0 1rem"><b>'+pend.length+'</b> partido'+(pend.length>1?'s':'')+' pendiente'+(pend.length>1?'s':'')+'. Pulsa uno para ver el historial contra ese rival.</p>';
+    (comp==='all'?COMPS:[comp]).forEach(function(c){var ms=pend.filter(function(m){return m.comp===c});if(!ms.length)return;
+      hp+='<h3 class="grp">'+esc(c)+' <span class="cmeta">('+ms.length+')</span></h3><ul class="nxl">'+ms.map(nxRow).join('')+'</ul>'});
+    return hp}
+  var h=bar(mine.filter(pl));
+  if(up.length&&pf!=='played'){var d0=up.slice(0,1).concat(up.filter(function(m){return m.date===up[0].date})).filter(function(m,i,a){return a.indexOf(m)===i});var rest=up.length-d0.length;
     h+='<h3 class="grp">Próximos partidos</h3><ul class="nxl">'+d0.map(nxRow).join('')+'</ul>'+(rest>0?'<details class="nxm"><summary>Ver '+rest+' partido'+(rest>1?'s':'')+' más del calendario</summary><ul class="nxl">'+up.slice(d0.length).map(nxRow).join('')+'</ul></details>':'');}
   (comp==='all'?COMPS:[comp]).forEach(function(c){
     var ms=mine.filter(function(m){return m.comp===c&&(pl(m)||canEdit||m.date<TODAY)});if(!ms.length)return;
@@ -798,6 +809,8 @@ function render(){
   var mine=state.matches.filter(function(m){return comp==='all'||m.comp===comp});
   document.getElementById('summary').innerHTML='';
   document.getElementById('dayBox').hidden=view!=='res';
+  document.getElementById('pfBox').hidden=view!=='res';
+  document.querySelectorAll('[data-pf]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.pf===pf))});
   document.getElementById('matchList').innerHTML=view==='res'?resView(mine):view==='cla'?(comp==='all'?COMPS:[comp]).map(standTable).join(''):statView(mine);
   saveUI();
   renderNews();
@@ -1112,6 +1125,7 @@ document.getElementById('dayFilter').addEventListener('change',function(e){day=e
 document.getElementById('dayClear').addEventListener('click',function(){day='';document.getElementById('dayFilter').value='';render()});
 document.getElementById('matchList').addEventListener('click',function(ev){var b=ev.target.closest('[data-sort]');if(b){sortBy=b.dataset.sort;render()}});
 document.getElementById('compSel').addEventListener('change',function(e){comp=e.target.value;render()});
+document.getElementById('pfBox').addEventListener('click',function(e){var b=e.target.closest('[data-pf]');if(!b)return;pf=b.dataset.pf;render()});
 document.querySelectorAll('[data-view]').forEach(function(b){b.addEventListener('click',function(){view=b.dataset.view;render()})});
 render();
 (async function(){
