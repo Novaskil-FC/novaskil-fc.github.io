@@ -449,6 +449,24 @@ a.tlk{color:inherit;text-decoration:none}a.tlk:hover{text-decoration:underline;t
 .tbl.tpl .lr{display:inline-block;min-width:2.8rem;color:#fff;font-weight:800;text-align:center;border-radius:8px;padding:.15rem .4rem}
 .hl li[hidden]{display:none}
 .tbl.tpl th .sortb{font-weight:600}
+.hero2{position:relative;overflow:hidden;isolation:isolate;display:grid;grid-template-columns:1.25fr .75fr;align-items:center;gap:2rem;margin:1.2rem 0 0;padding:2.6rem 2.6rem 2.2rem;border-radius:28px;background:linear-gradient(135deg,#1B1514 0%,#2A1716 55%,#4A1214 100%);color:#FBF8F6;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.hglow{position:absolute;z-index:-1;right:-10%;top:-30%;width:70%;height:160%;background:radial-gradient(closest-side,rgba(215,38,45,.55),transparent 70%);pointer-events:none}
+.hero2::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 40%);pointer-events:none}
+.hkick{display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#FF8A8F;margin-bottom:.6rem}
+.hero2 h1{color:#fff;margin:0 0 .8rem}
+.hlead{color:#E8DAD6;font-size:1.15rem;max-width:32rem;margin:0 0 1.4rem}
+.hstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem;margin:0 0 1.5rem;max-width:34rem}
+.hstats a{display:flex;flex-direction:column;align-items:flex-start;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:.6rem .8rem;color:#fff;text-decoration:none}
+.hstats a:hover{background:rgba(255,255,255,.13)}
+.hstats b{font:800 1.6rem/1.1 var(--display)}
+.hstats span{font-size:.8rem;color:#E8DAD6}
+.hghost{color:#fff;border-color:rgba(255,255,255,.6)}
+.hghost:hover{border-color:#fff}
+.hero2 .formrow{color:#E8DAD6}
+.hcrest{display:grid;place-items:center}
+.hcrest img{width:min(100%,280px);height:auto;filter:drop-shadow(0 0 2px #fff) drop-shadow(0 18px 30px rgba(0,0,0,.55))}
+@media (prefers-reduced-motion:no-preference){.hcrest img{animation:hfloat 6s ease-in-out infinite}@keyframes hfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}}
+@media (max-width:820px){.hero2{grid-template-columns:1fr;padding:1.8rem 1.3rem;text-align:left}.hcrest{order:-1;justify-items:start}.hcrest img{width:120px}.hglow{right:-30%;top:-20%;width:120%;height:80%}.hstats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .tlg{width:28px;height:28px;object-fit:contain;flex:none;display:inline-grid;place-items:center}
 .tlx{border-radius:50%;background:var(--line);font:800 .8rem var(--display);color:var(--muted)}
 .tt{display:inline-flex;align-items:center;gap:.6rem}
@@ -518,42 +536,21 @@ a.tlk{color:inherit;text-decoration:none}a.tlk:hover{text-decoration:underline;t
   </header>
 
   <main id="inicio">
-    <div class="hero" data-v="inicio">
-      <div>
-        <img class="crest" src="crest.png" width="144" height="170" alt="Escudo de Novaskil FC: un oso negro sobre un escudo rojo y blanco">
+    <div class="hero2" data-v="inicio">
+      <div class="hglow" aria-hidden="true"></div>
+      <div class="htext">
+        <span class="hkick">Clubes Pro · EA FC 27 · <span id="heroSeason">Temporada 1</span></span>
         <h1>Novaskil FC</h1>
-        <p class="lead">Club de Clubes Pro en EA FC 27. Once jugadores, un solo plan: ganar partidos y subir de división juntos.</p>
+        <p class="hlead">Once jugadores, un solo plan: ganar partidos y subir de división juntos.</p>
+        <div class="hstats" id="heroStats" data-render=""></div>
         <div class="btns">
-          <a class="btn main" href="#unete">Unirme al club</a>
-          <a class="btn" href="#plantilla">Ver plantilla</a>
+          <a class="btn main" href="#partidos">Ver partidos</a>
+          <a class="btn hghost" href="#plantilla">Plantilla</a>
+          <a class="btn hghost" href="#unete">Unirme al club</a>
         </div>
         <div class="formrow" id="formDots" data-render=""></div>
       </div>
-      <svg class="pitch" viewBox="0 0 400 540" role="img" aria-label="Alineación 3-5-2 de Novaskil FC sobre un campo">
-        <rect x="0" y="0" width="400" height="540" rx="18" fill="var(--pitch)"></rect>
-        <g fill="none" stroke="#FBF8F6" stroke-width="2" opacity=".7">
-          <rect x="20" y="20" width="360" height="500"></rect>
-          <line x1="20" y1="270" x2="380" y2="270"></line>
-          <circle cx="200" cy="270" r="48"></circle>
-          <rect x="95" y="20" width="210" height="90"></rect>
-          <rect x="145" y="20" width="110" height="38"></rect>
-          <rect x="95" y="430" width="210" height="90"></rect>
-          <rect x="145" y="482" width="110" height="38"></rect>
-        </g>
-        <g>
-          <g class="p" style="--i:0"><circle class="dot" cx="200" cy="480" r="13"></circle><text x="200" y="506">POR</text></g>
-          <g class="p" style="--i:1"><circle class="dot" cx="105" cy="405" r="13"></circle><text x="105" y="431">DFC</text></g>
-          <g class="p" style="--i:2"><circle class="dot" cx="200" cy="415" r="13"></circle><text x="200" y="441">DFC</text></g>
-          <g class="p" style="--i:3"><circle class="dot" cx="295" cy="405" r="13"></circle><text x="295" y="431">DFC</text></g>
-          <g class="p" style="--i:4"><circle class="dot" cx="50" cy="290" r="13"></circle><text x="50" y="316">CAI</text></g>
-          <g class="p" style="--i:5"><circle class="dot" cx="145" cy="310" r="13"></circle><text x="145" y="336">MC</text></g>
-          <g class="p" style="--i:6"><circle class="dot" cx="255" cy="310" r="13"></circle><text x="255" y="336">MC</text></g>
-          <g class="p" style="--i:7"><circle class="dot" cx="350" cy="290" r="13"></circle><text x="350" y="316">CAD</text></g>
-          <g class="p" style="--i:8"><circle class="dot" cx="200" cy="225" r="13"></circle><text x="200" y="251">MCO</text></g>
-          <g class="p" style="--i:9"><circle class="dot" cx="150" cy="125" r="13"></circle><text x="150" y="151">DC</text></g>
-          <g class="p" style="--i:10"><circle class="dot" cx="250" cy="125" r="13"></circle><text x="250" y="151">DC</text></g>
-        </g>
-      </svg>
+      <div class="hcrest"><img src="crest.png" width="279" height="329" alt="Escudo de Novaskil FC: un oso negro sobre un escudo rojo y blanco"></div>
     </div>
 
     <section data-v="inicio" id="ahora" aria-label="Último y próximo partido">
@@ -1047,6 +1044,9 @@ function render(){
   renderAl();
   renderSquad();
   nowBox();
+  var hsE=document.getElementById('heroStats');if(hsE){var pm=state.matches.filter(function(m){return pl(m)&&m.date<=TODAY}),w=pm.filter(function(m){return m.gf>m.ga}).length,gf=pm.reduce(function(s,m){return s+m.gf},0),tt=(state.trophies||[]).reduce(function(s,t){return s+(t.c||1)},0);
+    hsE.innerHTML='<a href="#partidos"><b>'+pm.length+'</b><span>partidos</span></a><a href="#partidos"><b>'+(pm.length?Math.round(w/pm.length*100):0)+'%</b><span>victorias</span></a><a href="#partidos"><b>'+gf+'</b><span>goles</span></a><a href="#vitrina"><b>'+tt+'</b><span>títulos</span></a>'}
+  var hsS=document.getElementById('heroSeason');if(hsS&&state.season)hsS.textContent=state.season.name;
   var stg=document.getElementById('seasonTag');if(stg)stg.textContent=(state.season&&state.season.name)||'';
   var hh=decodeURIComponent((location.hash||'').slice(1));if(hh.indexOf('jugador/')===0)window.nvPlayer(hh.slice(8));if(hh.indexOf('partido/')===0)window.nvMatch(hh.slice(8));if(hh.indexOf('equipo/')===0)window.nvTeam(hh.slice(7));
 }
