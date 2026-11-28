@@ -543,10 +543,10 @@ h3.grp{letter-spacing:.01em}
 .imd{display:inline-block;min-width:3.4rem;text-align:center;border-radius:8px;padding:.15rem .45rem;font-weight:800;color:#fff;background:#7A7270}.imd.up{background:#1E8A4C}.imd.dn{background:#C23B3B}
 .tbl.imp td:nth-child(n+2),.tbl.imp th:nth-child(n+2){text-align:right}
 .dimg-open{margin-left:auto;padding:.45rem 1.1rem}
-.dimg{border:none;border-radius:22px;padding:1.2rem;max-width:min(560px,calc(100vw - 32px));width:100%;background:var(--card);color:var(--ink)}
+.dimg{border:none;border-radius:22px;padding:1.2rem;max-width:min(760px,calc(100vw - 32px));width:100%;background:var(--card);color:var(--ink)}
 .dimg::backdrop{background:rgba(0,0,0,.6)}
 .dimg-h{display:flex;align-items:center;justify-content:space-between;gap:1rem}.dimg-h h3{margin:0;font-size:1.1rem}
-.dimg-c{margin:.8rem 0}
+.dimg-c{margin:.8rem 0;display:flex;flex-wrap:wrap;gap:.8rem}
 .dimg-p canvas{display:block;width:100%;height:auto;border-radius:14px;background:#1B1514}
 .dimg-b{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.9rem}
 .tlg{width:28px;height:28px;object-fit:contain;flex:none;display:inline-grid;place-items:center}
@@ -668,8 +668,8 @@ h3.grp{letter-spacing:.01em}
         <div class="dayw" id="dayBox"><label class="sel">Buscar por día<input type="date" id="dayFilter"></label><button type="button" class="xbtn" id="dayClear">Quitar filtro</button><button type="button" class="btn main dimg-open" id="dayImgBtn">📸 Imagen de un día</button></div>
         <dialog id="dayImgDlg" class="dimg" aria-labelledby="dimgT">
           <div class="dimg-h"><h3 id="dimgT">Imagen de los partidos de un día</h3><button type="button" class="xbtn" id="dimgClose" aria-label="Cerrar">Cerrar ✕</button></div>
-          <div class="dimg-c"><label class="sel">Día<select id="dimgDay"></select></label></div>
-          <div class="dimg-p"><canvas id="dimgCv" width="1080" height="1350" role="img" aria-label="Vista previa de la imagen"></canvas></div>
+          <div class="dimg-c"><label class="sel">Día<select id="dimgDay"></select></label><label class="sel">Formato<select id="dimgFmt"><option value="h">Horizontal</option><option value="v">Vertical</option></select></label></div>
+          <div class="dimg-p"><canvas id="dimgCv" width="1920" height="1080" role="img" aria-label="Vista previa de la imagen"></canvas></div>
           <div class="dimg-b"><button type="button" class="btn main" id="dimgDl">Descargar imagen</button><button type="button" class="btn" id="dimgSh" hidden>Compartir</button></div>
         </dialog>
         <div class="tabs" role="group" aria-label="Vista"><button type="button" data-view="res" aria-pressed="true">Resultados</button><button type="button" data-view="cla" aria-pressed="false">Clasificación</button><button type="button" data-view="cal" aria-pressed="false">Calendario</button><button type="button" data-view="rec" aria-pressed="false">Récords y rachas</button><button type="button" data-view="stat" aria-pressed="false">Estadísticas</button></div>
@@ -1457,36 +1457,40 @@ document.getElementById('dayClear').addEventListener('click',function(){day='';d
   async function draw(d){
     var ms=state.matches.filter(function(m){return m.date===d}).sort(function(a,b){return key(a)<key(b)?-1:1});
     try{await Promise.all(['800 40px Unbounded','600 30px Figtree','700 40px Oswald'].map(function(f){return document.fonts.load(f)}))}catch(e){}
-    var W=1080,H=1350,x=cv.getContext('2d');
+    var HZ=document.getElementById('dimgFmt').value!=='v',W=HZ?1920:1080,H=HZ?1080:1350;cv.width=W;cv.height=H;var x=cv.getContext('2d');
     var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#1B1514');g.addColorStop(.55,'#2A1716');g.addColorStop(1,'#4A1214');x.fillStyle=g;x.fillRect(0,0,W,H);
     var rg=x.createRadialGradient(W*.85,H*.05,0,W*.85,H*.05,W*.8);rg.addColorStop(0,'rgba(215,38,45,.45)');rg.addColorStop(1,'rgba(215,38,45,0)');x.fillStyle=rg;x.fillRect(0,0,W,H);
-    var crest=await img('crest.png');if(crest){var ch=150,cw=ch*crest.width/crest.height;x.drawImage(crest,70,64,cw,ch)}
-    var played=ms.length&&ms.every(pl),anyP=ms.some(pl);
-    x.fillStyle='#FF8A8F';x.font='700 30px '+OF;x.textBaseline='alphabetic';x.fillText((played?'RESULTADOS':anyP?'PARTIDOS':'PARTIDOS DE HOY').replace('PARTIDOS DE HOY',d===TODAY?'PARTIDOS DE HOY':'PRÓXIMOS PARTIDOS'),230,105);
-    x.fillStyle='#FFFFFF';x.font='800 52px '+DF;x.fillText('NOVASKIL FC',230,170);
-    x.fillStyle='#E8DAD6';x.font='600 34px '+BF;x.fillText(dl(d,true),230,218);
-    var top=280,bot=H-110,n=Math.max(1,ms.length),gap=22,rh=Math.min(200,(bot-top-gap*(n-1))/n);
-    var y0=top+((bot-top)-(rh*n+gap*(n-1)))/2;
+    var crest=await img('crest.png'),M=HZ?90:70;if(crest){var ch=150,cw0=ch*crest.width/crest.height;x.drawImage(crest,M,60,cw0,ch)}
+    var played=ms.length&&ms.every(pl),anyP=ms.some(pl),tx=M+160;
+    x.textAlign='left';x.textBaseline='alphabetic';
+    x.fillStyle='#FF8A8F';x.font='700 30px '+OF;x.fillText(played?'RESULTADOS':anyP?'PARTIDOS':d===TODAY?'PARTIDOS DE HOY':'PRÓXIMOS PARTIDOS',tx,101);
+    x.fillStyle='#FFFFFF';x.font='800 52px '+DF;x.fillText('NOVASKIL FC',tx,166);
+    x.fillStyle='#E8DAD6';x.font='600 34px '+BF;x.fillText(dl(d,true),tx,214);
+    var n=Math.max(1,ms.length),cols=HZ&&n>3?2:1,rows=Math.ceil(n/cols),gap=22,top=HZ?250:280,bot=H-(HZ?100:110);
+    var cw=cols===2?(W-2*M-gap)/2:Math.min(W-2*M,HZ?1400:W-2*M),rh=Math.min(200,(bot-top-gap*(rows-1))/rows);
+    var y0=top+((bot-top)-(rh*rows+gap*(rows-1)))/2,xs0=(W-(cw*cols+gap*(cols-1)))/2;
     if(!ms.length){x.fillStyle='#E8DAD6';x.font='600 36px '+BF;x.textAlign='center';x.fillText('No hay partidos este día',W/2,H/2);x.textAlign='left'}
     for(var i=0;i<ms.length;i++){
-      var m=ms[i],y=y0+i*(rh+gap),H0=m.home!==false,hn=H0?'Novaskil FC':m.rival,an=H0?m.rival:'Novaskil FC',P=pl(m),k=P?rs(m):'';
-      rr(x,60,y,W-120,rh,26);x.fillStyle='rgba(255,255,255,.08)';x.fill();x.strokeStyle=P?(k==='w'?'#2FB36A':k==='d'?'#9A928F':'#E0565C'):'rgba(255,255,255,.18)';x.lineWidth=P?4:2;x.stroke();
-      var s=rh/200;
+      var col=cols===2?i%2:0,row=cols===2?Math.floor(i/2):i;
+      if(cols===2&&ms.length%2&&i===ms.length-1)col=0.5;
+      var m=ms[i],bx=xs0+col*(cw+gap),y=y0+row*(rh+gap),H0=m.home!==false,hn=H0?'Novaskil FC':m.rival,an=H0?m.rival:'Novaskil FC',P=pl(m),k=P?rs(m):'';
+      rr(x,bx,y,cw,rh,26);x.fillStyle='rgba(255,255,255,.08)';x.fill();x.strokeStyle=P?(k==='w'?'#2FB36A':k==='d'?'#9A928F':'#E0565C'):'rgba(255,255,255,.18)';x.lineWidth=P?4:2;x.stroke();
+      var s=rh/200,mid=bx+cw/2;
       x.font='700 '+Math.round(26*s+4)+'px '+OF;var lab=m.comp+(m.time?'  ·  '+m.time:'');var lw=x.measureText(lab).width+36;
-      rr(x,W/2-lw/2,y+14*s,lw,40*s+6,20*s+3);x.fillStyle='#D7262D';x.fill();x.fillStyle='#fff';x.textAlign='center';x.fillText(lab,W/2,y+14*s+(40*s+6)/2+(26*s+4)*.36);
-      var cy=y+rh*.6,ls=Math.round(84*s),cx=W/2,nameMax=(W-120)/2-ls-170*Math.max(s,.7);
-      for(var side=0;side<2;side++){var nm=side?an:hn,us=/novaskil/i.test(nm),lx=side?W-60-30-ls:60+30;
+      rr(x,mid-lw/2,y+14*s,lw,40*s+6,20*s+3);x.fillStyle='#D7262D';x.fill();x.fillStyle='#fff';x.textAlign='center';x.fillText(lab,mid,y+14*s+(40*s+6)/2+(26*s+4)*.36);
+      var cy=y+rh*.6,ls=Math.round(84*s),nameMax=cw/2-30-ls-20-110*Math.max(s,.7);
+      for(var side=0;side<2;side++){var nm=side?an:hn,us=/novaskil/i.test(nm),lx=side?bx+cw-30-ls:bx+30;
         var sl=LM[nk(nm)],li=sl?await img('logos/'+sl+'.png'):null;
         if(us&&!li)li=await img('icon-180.png');
         if(li){x.drawImage(li,lx,cy-ls/2,ls,ls)}else{x.beginPath();x.arc(lx+ls/2,cy,ls/2,0,7);x.fillStyle='rgba(255,255,255,.15)';x.fill();x.fillStyle='#fff';x.font='800 '+Math.round(ls*.45)+'px '+DF;x.textAlign='center';x.fillText(String(nm).charAt(0).toUpperCase(),lx+ls/2,cy+ls*.16)}
         var t=fit(x,nm,nameMax,Math.round(32*s+6),us?'800':'600',us?DF:BF);x.fillStyle=us?'#FFFFFF':'#E8DAD6';x.textAlign=side?'right':'left';x.fillText(t,side?lx-20:lx+ls+20,cy+(32*s+6)*.35)}
       x.textAlign='center';
-      if(P){var hs=H0?m.gf:m.ga,as=H0?m.ga:m.gf;x.font='700 '+Math.round(70*s+6)+'px '+OF;x.fillStyle='#FFFFFF';x.fillText(hs+' - '+as,cx,cy+(70*s+6)*.36)}
-      else{x.font='800 '+Math.round(44*s+4)+'px '+DF;x.fillStyle='#FF8A8F';x.fillText('VS',cx,cy+(44*s+4)*.36)}
+      if(P){var hs=H0?m.gf:m.ga,as=H0?m.ga:m.gf;x.font='700 '+Math.round(70*s+6)+'px '+OF;x.fillStyle='#FFFFFF';x.fillText(hs+' - '+as,mid,cy+(70*s+6)*.36)}
+      else{x.font='800 '+Math.round(44*s+4)+'px '+DF;x.fillStyle='#FF8A8F';x.fillText('VS',mid,cy+(44*s+4)*.36)}
       x.textAlign='left'}
-    x.fillStyle='rgba(255,255,255,.7)';x.font='600 28px '+BF;x.textAlign='center';x.fillText('TikTok @Novaskilfc  ·  X @NovaskilFC  ·  novaskil-fc.github.io',W/2,H-50);x.textAlign='left';
+    x.fillStyle='rgba(255,255,255,.7)';x.font='600 28px '+BF;x.textAlign='center';x.fillText('TikTok @Novaskilfc  ·  X @NovaskilFC  ·  novaskil-fc.github.io',W/2,H-(HZ?45:50));x.textAlign='left';
   }
-  function fname(){return'novaskil-'+sel.value+'.png'}
+  function fname(){return'novaskil-'+sel.value+(document.getElementById('dimgFmt').value==='v'?'-vertical':'')+'.png'}
   function open(){var ds=days(),cur=(document.getElementById('dayFilter')||{}).value;
     var def=ds.indexOf(cur)>=0?cur:(ds.filter(function(d){return d>=TODAY})[0]||ds[ds.length-1]);
     sel.innerHTML=ds.map(function(d){var c=state.matches.filter(function(m){return m.date===d}),p=c.every(pl);return'<option value="'+d+'"'+(d===def?' selected':'')+'>'+dl(d)+' · '+c.length+' partido'+(c.length>1?'s':'')+(p?' · jugado':' · pendiente')+'</option>'}).join('');
@@ -1496,6 +1500,7 @@ document.getElementById('dayClear').addEventListener('click',function(){day='';d
   document.getElementById('dimgClose').addEventListener('click',function(){dlg.close()});
   dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close()});
   sel.addEventListener('change',function(){draw(sel.value)});
+  document.getElementById('dimgFmt').addEventListener('change',function(){draw(sel.value)});
   document.getElementById('dimgDl').addEventListener('click',function(){cv.toBlob(function(b){var a=document.createElement('a'),u=URL.createObjectURL(b);a.href=u;a.download=fname();document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},2000)},'image/png')});
   document.getElementById('dimgSh').addEventListener('click',function(){cv.toBlob(function(b){var f=new File([b],fname(),{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f],title:'Novaskil FC'}).catch(function(){});else document.getElementById('dimgDl').click()},'image/png')});
 })();
