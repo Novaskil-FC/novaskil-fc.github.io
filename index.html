@@ -422,12 +422,15 @@ a.pl:hover,a.ldn:hover,.ldr li a:hover{text-decoration:underline}
 .recl li>b:first-child{min-width:14rem;font-family:var(--display);font-size:.9rem}
 .recl a{color:inherit;font-weight:600}
 .rbadge{margin-left:.6rem;font-size:.85rem;font-weight:700;text-decoration:none;color:#fff;background:var(--c);border-radius:99px;padding:.15rem .7rem}
+.pfsel{display:flex;flex-wrap:wrap;gap:.8rem 1.2rem;margin:0 0 .8rem}
+.pfsel select{min-width:13rem}
 .pfil{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .6rem}
 .pfil button{font:600 .9rem var(--body);padding:.4rem .8rem;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
 .pfil button b{font-family:var(--display);font-size:.8rem;margin-left:.2rem;color:var(--muted)}
 .pfil button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
 .pfil button[aria-pressed="true"] b{color:#fff}
 .pfc button{font-size:.82rem;padding:.3rem .7rem}
+.pml{cursor:pointer}.pml:hover circle:nth-of-type(2){fill:#FF4A52}.pml:hover .pnb{fill:rgba(215,38,45,.85)}
 .tlg{width:28px;height:28px;object-fit:contain;flex:none;display:inline-grid;place-items:center}
 .tlx{border-radius:50%;background:var(--line);font:800 .8rem var(--display);color:var(--muted)}
 .tt{display:inline-flex;align-items:center;gap:.6rem}
@@ -757,14 +760,14 @@ function pitchSvg(us,them,rvName){
   function spread(k,i){return k===1?W/2:M+(W-2*M)*i/(k-1)}
   function zz(n,i){return n>=5?(i%2?-30:30):0}
   function marker(x,y,p,side){var r=p.r,ring=r?rc(r):'#7A7270',fill=side==='us'?'#D7262D':'#2B3A55';
-    var s='<g class="pm"><title>'+esc(p.n)+(p.pos?' · '+esc(p.pos):'')+(r?' · nota '+r.toFixed(1):'')+(p.g?' · '+p.g+' gol'+(p.g>1?'es':''):'')+(p.a?' · '+p.a+' asist.':'')+(p.mvp?' · MVP':'')+'</title>';
+    var s=(side==='us'?'<a href="#jugador/'+encodeURIComponent(p.n)+'" class="pml">':'')+'<g class="pm"><title>'+esc(p.n)+(p.pos?' · '+esc(p.pos):'')+(r?' · nota '+r.toFixed(1):'')+(p.g?' · '+p.g+' gol'+(p.g>1?'es':''):'')+(p.a?' · '+p.a+' asist.':'')+(p.mvp?' · MVP':'')+'</title>';
     s+='<circle cx="'+x+'" cy="'+y+'" r="33" fill="'+ring+'"/><circle cx="'+x+'" cy="'+y+'" r="27" fill="'+fill+'"/>';
     s+='<text x="'+x+'" y="'+(y+9)+'" class="pr">'+(r?r.toFixed(1):'-')+'</text>';
     if(p.mvp)s+='<g transform="translate('+(x+28)+','+(y-28)+')"><circle r="15" fill="#F4C542"/><text y="6" class="ps">★</text></g>';
     if(p.g)s+='<g transform="translate('+(x-28)+','+(y-28)+')"><circle r="15" fill="#fff"/><text y="6" class="pg">'+(p.g>1?p.g+'⚽':'⚽')+'</text></g>';
     if(p.a)s+='<g transform="translate('+(x+30)+','+(y+22)+')"><circle r="13" fill="#1E8A4C"/><text y="5" class="pa">'+p.a+'A</text></g>';
     s+='<rect x="'+(x-74)+'" y="'+(y+38)+'" width="148" height="32" rx="16" class="pnb"/><text x="'+x+'" y="'+(y+60)+'" class="pn">'+esc(short(p.n))+'</text>';
-    return s+'</g>'}
+    return s+'</g>'+(side==='us'?'</a>':'')}
   function half(rows,ys,side){
     var o='<rect width="'+W+'" height="'+H+'" rx="26" class="pf"/>';
     for(var i=0;i<6;i++)o+='<rect x="0" y="'+(i*H/6)+'" width="'+W+'" height="'+(H/12)+'" class="pstr"/>';
@@ -980,7 +983,7 @@ function lineup(m){
   if(lu.length&&(pl(m)||canEdit)){
     var best=Math.max.apply(null,lu.map(function(x){return x.r||0})),sc=lu.filter(function(x){return x.g>0}).map(function(x){return esc(x.n)+(x.g>1?' x'+x.g:'')}).join(', ');
     var asi=lu.filter(function(x){return x.a>0}).map(function(x){return esc(x.n)+(x.a>1?' x'+x.a:'')}).join(', ');if(sc)o+='<p class="gl">⚽ '+sc+'</p>';if(asi)o+='<p class="gl">👟 '+asi+'</p>';
-    o+='<details class="lu"><summary>Alineación y valoraciones</summary><ul>'+lu.map(function(x){return'<li><span class="lp">'+x.p+'</span><span class="ln">'+esc(x.n)+(m.mvp?(x.n===m.mvp?' <b class="mvpb">MVP</b>':''):(x.r&&x.r===best?' ★':''))+'</span><span class="lg">'+(x.g?'⚽ '+x.g+' ':'')+(x.a?'👟 '+x.a:'')+'</span><span class="lr" style="background:'+rc(x.r)+'">'+(x.r?x.r.toFixed(1):'-')+'</span></li>'}).join('')+'</ul></details>';
+    o+='<details class="lu"><summary>Alineación y valoraciones</summary><ul>'+lu.map(function(x){return'<li><span class="lp">'+x.p+'</span><span class="ln"><a class="pl" href="#jugador/'+encodeURIComponent(x.n)+'">'+esc(x.n)+'</a>'+(m.mvp?(x.n===m.mvp?' <b class="mvpb">MVP</b>':''):(x.r&&x.r===best?' ★':''))+'</span><span class="lg">'+(x.g?'⚽ '+x.g+' ':'')+(x.a?'👟 '+x.a:'')+'</span><span class="lr" style="background:'+rc(x.r)+'">'+(x.r?x.r.toFixed(1):'-')+'</span></li>'}).join('')+'</ul></details>';
   }
   if(canEdit){
     o+='<details class="lu"><summary>'+(lu.length?'Editar alineación':'Añadir alineación')+'</summary>'+POS.map(function(p,i){var x=lu[i]||{};return'<div class="er"><span class="lp">'+p+'</span><select aria-label="Jugador '+p+'" data-lu="n" data-i="'+i+'"><option value=""></option>'+ROSTER.map(function(n){return'<option'+(x.n===n?' selected':'')+'>'+n+'</option>'}).join('')+'</select><input type="number" min="0" max="20" placeholder="Goles" aria-label="Goles" data-lu="g" data-i="'+i+'" value="'+(x.g||'')+'"><input type="number" min="0" max="20" placeholder="Asist." aria-label="Asistencias" data-lu="a" data-i="'+i+'" value="'+(x.a||'')+'"><input type="number" min="0" max="10" step="0.1" placeholder="Nota" aria-label="Valoración" data-lu="r" data-i="'+i+'" value="'+(x.r!=null?x.r:'')+'"></div>'}).join('')+'<button class="btn main" style="padding:.3rem .9rem;margin-top:.6rem" data-act="lu" data-id="'+m.id+'">Guardar alineación</button></details>';
@@ -1197,15 +1200,11 @@ window.nvPlayer=function(n){
   var CNT={};FL.forEach(function(f){CNT[f[0]]=all.filter(function(mm){return f[2](mm,xs(mm))}).length});
   var CC={};all.forEach(function(mm){CC[mm.comp]=(CC[mm.comp]||0)+1});
   h+='<h3 class="grp" id="pmHead">Partidos jugados ('+all.length+')</h3>';
-  h+='<div class="pfil" role="group" aria-label="Filtrar partidos">'+FL.filter(function(f){return f[0]==='all'||CNT[f[0]]}).map(function(f){return'<button type="button" data-pk="'+f[0]+'" aria-pressed="'+(f[0]==='all')+'">'+f[1]+' <b>'+CNT[f[0]]+'</b></button>'}).join('')+'</div>';
-  if(Object.keys(CC).length>1)h+='<div class="pfil pfc" role="group" aria-label="Filtrar por competición"><button type="button" data-pc="" aria-pressed="true">Todas</button>'+COMPS.filter(function(c){return CC[c]}).map(function(c){return'<button type="button" data-pc="'+esc(c)+'" aria-pressed="false">'+esc(c)+' <b>'+CC[c]+'</b></button>'}).join('')+'</div>';
+  h+='<div class="pfsel"><label class="sel">Mostrar<select id="pmK">'+FL.filter(function(f){return f[0]==='all'||CNT[f[0]]}).map(function(f){return'<option value="'+f[0]+'">'+f[1]+' ('+CNT[f[0]]+')</option>'}).join('')+'</select></label>'+(Object.keys(CC).length>1?'<label class="sel">Competición<select id="pmC"><option value="">Todas ('+all.length+')</option>'+COMPS.filter(function(c){return CC[c]}).map(function(c){return'<option value="'+esc(c)+'">'+esc(c)+' ('+CC[c]+')</option>'}).join('')+'</select></label>':'')+'</div>';
   h+='<ul class="plast" id="pmList">'+all.map(function(mm){var x=xs(mm),k=rs(mm),tags=FL.filter(function(f){return f[2](mm,x)}).map(function(f){return f[0]}).join(' ');return'<li class="m-'+k+'" data-pk="'+tags+'" data-pc="'+esc(mm.comp)+'"><a href="#partido/'+mm.id+'"><span class="cmeta pd">'+esc(fd(mm))+' · '+esc(mm.comp)+'</span><span class="pr"><b class="lpos" title="Posición en ese partido">'+esc(x.p)+'</b>'+logo(mm.rival)+'<span>'+esc(mm.rival)+'</span></span><b class="ps2">'+haTag(mm)+' '+mm.gf+' - '+mm.ga+'</b><span class="pga">'+(x.g?'⚽ '+x.g+' ':'')+(x.a?'👟 '+x.a:'')+(mm.mvp===n?' <b class="mvpb">MVP</b>':'')+'</span><span class="lr" style="background:'+rc(x.r)+'">'+(x.r?x.r.toFixed(1):'-')+'</span></a></li>'}).join('')+'</ul><p class="cmeta" id="pmEmpty" hidden>No hay partidos con ese filtro.</p>';
   box.innerHTML=h;
-  var fk='all',fc='';
-  box.onclick=function(e){var b=e.target.closest('[data-pk]:not(li),[data-pc]:not(li)');if(!b||b.tagName!=='BUTTON')return;
-    if(b.hasAttribute('data-pk'))fk=b.dataset.pk;else fc=b.dataset.pc;
-    box.querySelectorAll('.pfil button[data-pk]').forEach(function(x){x.setAttribute('aria-pressed',String(x.dataset.pk===fk))});
-    box.querySelectorAll('.pfil button[data-pc]').forEach(function(x){x.setAttribute('aria-pressed',String(x.dataset.pc===fc))});
+  box.onchange=function(e){if(e.target.id!=='pmK'&&e.target.id!=='pmC')return;
+    var fk=(document.getElementById('pmK')||{}).value||'all',fc=(document.getElementById('pmC')||{}).value||'';
     var vis=0;box.querySelectorAll('#pmList li').forEach(function(li){var ok=(fk==='all'||(' '+li.dataset.pk+' ').indexOf(' '+fk+' ')>=0)&&(!fc||li.dataset.pc===fc);li.hidden=!ok;if(ok)vis++});
     var hd=document.getElementById('pmHead');if(hd)hd.textContent='Partidos jugados ('+vis+')';document.getElementById('pmEmpty').hidden=vis>0};
 };
