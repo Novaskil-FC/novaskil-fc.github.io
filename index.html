@@ -542,6 +542,13 @@ h3.grp{letter-spacing:.01em}
 .imc .w{color:#1E8A4C;font-weight:800}.imc .d{color:#7A7270;font-weight:800}.imc .l{color:#C23B3B;font-weight:800}
 .imd{display:inline-block;min-width:3.4rem;text-align:center;border-radius:8px;padding:.15rem .45rem;font-weight:800;color:#fff;background:#7A7270}.imd.up{background:#1E8A4C}.imd.dn{background:#C23B3B}
 .tbl.imp td:nth-child(n+2),.tbl.imp th:nth-child(n+2){text-align:right}
+.dimg-open{margin-left:auto;padding:.45rem 1.1rem}
+.dimg{border:none;border-radius:22px;padding:1.2rem;max-width:min(560px,calc(100vw - 32px));width:100%;background:var(--card);color:var(--ink)}
+.dimg::backdrop{background:rgba(0,0,0,.6)}
+.dimg-h{display:flex;align-items:center;justify-content:space-between;gap:1rem}.dimg-h h3{margin:0;font-size:1.1rem}
+.dimg-c{margin:.8rem 0}
+.dimg-p canvas{display:block;width:100%;height:auto;border-radius:14px;background:#1B1514}
+.dimg-b{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.9rem}
 .tlg{width:28px;height:28px;object-fit:contain;flex:none;display:inline-grid;place-items:center}
 .tlx{border-radius:50%;background:var(--line);font:800 .8rem var(--display);color:var(--muted)}
 .tt{display:inline-flex;align-items:center;gap:.6rem}
@@ -658,7 +665,13 @@ h3.grp{letter-spacing:.01em}
       <div class="ctl">
         <label class="sel">Elige competición<select id="compSel"><option value="all">COMPETICIONES (todas)</option><option>VPCL ONE</option><option>AFJ 5B</option><option>VPG 5A</option><option>ECL 3A</option></select></label>
         <div class="pfw" id="pfBox" role="group" aria-label="Mostrar partidos"><span class="pfl">Mostrar</span><div class="tabs pft"><button type="button" data-pf="all" aria-pressed="true">Todos</button><button type="button" data-pf="played" aria-pressed="false">Jugados</button><button type="button" data-pf="pending" aria-pressed="false">Pendientes</button></div></div>
-        <div class="dayw" id="dayBox"><label class="sel">Buscar por día<input type="date" id="dayFilter"></label><button type="button" class="xbtn" id="dayClear">Quitar filtro</button></div>
+        <div class="dayw" id="dayBox"><label class="sel">Buscar por día<input type="date" id="dayFilter"></label><button type="button" class="xbtn" id="dayClear">Quitar filtro</button><button type="button" class="btn main dimg-open" id="dayImgBtn">📸 Imagen de un día</button></div>
+        <dialog id="dayImgDlg" class="dimg" aria-labelledby="dimgT">
+          <div class="dimg-h"><h3 id="dimgT">Imagen de los partidos de un día</h3><button type="button" class="xbtn" id="dimgClose" aria-label="Cerrar">Cerrar ✕</button></div>
+          <div class="dimg-c"><label class="sel">Día<select id="dimgDay"></select></label></div>
+          <div class="dimg-p"><canvas id="dimgCv" width="1080" height="1350" role="img" aria-label="Vista previa de la imagen"></canvas></div>
+          <div class="dimg-b"><button type="button" class="btn main" id="dimgDl">Descargar imagen</button><button type="button" class="btn" id="dimgSh" hidden>Compartir</button></div>
+        </dialog>
         <div class="tabs" role="group" aria-label="Vista"><button type="button" data-view="res" aria-pressed="true">Resultados</button><button type="button" data-view="cla" aria-pressed="false">Clasificación</button><button type="button" data-view="cal" aria-pressed="false">Calendario</button><button type="button" data-view="rec" aria-pressed="false">Récords y rachas</button><button type="button" data-view="stat" aria-pressed="false">Estadísticas</button></div>
       </div>
       <div id="summary" data-render=""></div>
@@ -1433,6 +1446,60 @@ document.getElementById('newsList').addEventListener('click',function(ev){var b=
 document.getElementById('compSel').value=comp;document.getElementById('dayFilter').value=day;
 document.getElementById('dayFilter').addEventListener('change',function(e){day=e.target.value;render()});
 document.getElementById('dayClear').addEventListener('click',function(){day='';document.getElementById('dayFilter').value='';render()});
+(function(){
+  var dlg=document.getElementById('dayImgDlg'),sel=document.getElementById('dimgDay'),cv=document.getElementById('dimgCv'),IMG={};
+  function img(src){if(!IMG[src])IMG[src]=new Promise(function(ok){var i=new Image();i.onload=function(){ok(i)};i.onerror=function(){ok(null)};i.src=src});return IMG[src]}
+  function days(){var o={};state.matches.forEach(function(m){if(m.date)o[m.date]=1});return Object.keys(o).sort()}
+  function dl(d,long){var t=new Date(d+'T12:00');var s=t.toLocaleDateString('es-ES',long?{weekday:'long',day:'numeric',month:'long'}:{weekday:'short',day:'numeric',month:'short'});return s.charAt(0).toUpperCase()+s.slice(1)}
+  function rr(x,a,b,w,hh,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+hh,r);x.arcTo(a+w,b+hh,a,b+hh,r);x.arcTo(a,b+hh,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
+  function fit(x,t,max,size,weight,fam){var s=size;do{x.font=weight+' '+s+'px '+fam;s-=2}while(x.measureText(t).width>max&&s>14);var o=t;if(x.measureText(o).width>max){while(o.length>1&&x.measureText(o+'…').width>max)o=o.slice(0,-1);o+='…'}return o}
+  var DF='Unbounded, "Arial Black", sans-serif',BF='Figtree, system-ui, sans-serif',OF='Oswald, Figtree, sans-serif';
+  async function draw(d){
+    var ms=state.matches.filter(function(m){return m.date===d}).sort(function(a,b){return key(a)<key(b)?-1:1});
+    try{await Promise.all(['800 40px Unbounded','600 30px Figtree','700 40px Oswald'].map(function(f){return document.fonts.load(f)}))}catch(e){}
+    var W=1080,H=1350,x=cv.getContext('2d');
+    var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#1B1514');g.addColorStop(.55,'#2A1716');g.addColorStop(1,'#4A1214');x.fillStyle=g;x.fillRect(0,0,W,H);
+    var rg=x.createRadialGradient(W*.85,H*.05,0,W*.85,H*.05,W*.8);rg.addColorStop(0,'rgba(215,38,45,.45)');rg.addColorStop(1,'rgba(215,38,45,0)');x.fillStyle=rg;x.fillRect(0,0,W,H);
+    var crest=await img('crest.png');if(crest){var ch=150,cw=ch*crest.width/crest.height;x.drawImage(crest,70,64,cw,ch)}
+    var played=ms.length&&ms.every(pl),anyP=ms.some(pl);
+    x.fillStyle='#FF8A8F';x.font='700 30px '+OF;x.textBaseline='alphabetic';x.fillText((played?'RESULTADOS':anyP?'PARTIDOS':'PARTIDOS DE HOY').replace('PARTIDOS DE HOY',d===TODAY?'PARTIDOS DE HOY':'PRÓXIMOS PARTIDOS'),230,105);
+    x.fillStyle='#FFFFFF';x.font='800 52px '+DF;x.fillText('NOVASKIL FC',230,170);
+    x.fillStyle='#E8DAD6';x.font='600 34px '+BF;x.fillText(dl(d,true),230,218);
+    var top=280,bot=H-110,n=Math.max(1,ms.length),gap=22,rh=Math.min(200,(bot-top-gap*(n-1))/n);
+    var y0=top+((bot-top)-(rh*n+gap*(n-1)))/2;
+    if(!ms.length){x.fillStyle='#E8DAD6';x.font='600 36px '+BF;x.textAlign='center';x.fillText('No hay partidos este día',W/2,H/2);x.textAlign='left'}
+    for(var i=0;i<ms.length;i++){
+      var m=ms[i],y=y0+i*(rh+gap),H0=m.home!==false,hn=H0?'Novaskil FC':m.rival,an=H0?m.rival:'Novaskil FC',P=pl(m),k=P?rs(m):'';
+      rr(x,60,y,W-120,rh,26);x.fillStyle='rgba(255,255,255,.08)';x.fill();x.strokeStyle=P?(k==='w'?'#2FB36A':k==='d'?'#9A928F':'#E0565C'):'rgba(255,255,255,.18)';x.lineWidth=P?4:2;x.stroke();
+      var s=rh/200;
+      x.font='700 '+Math.round(26*s+4)+'px '+OF;var lab=m.comp+(m.time?'  ·  '+m.time:'');var lw=x.measureText(lab).width+36;
+      rr(x,W/2-lw/2,y+14*s,lw,40*s+6,20*s+3);x.fillStyle='#D7262D';x.fill();x.fillStyle='#fff';x.textAlign='center';x.fillText(lab,W/2,y+14*s+(40*s+6)/2+(26*s+4)*.36);
+      var cy=y+rh*.6,ls=Math.round(84*s),cx=W/2,nameMax=(W-120)/2-ls-170*Math.max(s,.7);
+      for(var side=0;side<2;side++){var nm=side?an:hn,us=/novaskil/i.test(nm),lx=side?W-60-30-ls:60+30;
+        var sl=LM[nk(nm)],li=sl?await img('logos/'+sl+'.png'):null;
+        if(us&&!li)li=await img('icon-180.png');
+        if(li){x.drawImage(li,lx,cy-ls/2,ls,ls)}else{x.beginPath();x.arc(lx+ls/2,cy,ls/2,0,7);x.fillStyle='rgba(255,255,255,.15)';x.fill();x.fillStyle='#fff';x.font='800 '+Math.round(ls*.45)+'px '+DF;x.textAlign='center';x.fillText(String(nm).charAt(0).toUpperCase(),lx+ls/2,cy+ls*.16)}
+        var t=fit(x,nm,nameMax,Math.round(32*s+6),us?'800':'600',us?DF:BF);x.fillStyle=us?'#FFFFFF':'#E8DAD6';x.textAlign=side?'right':'left';x.fillText(t,side?lx-20:lx+ls+20,cy+(32*s+6)*.35)}
+      x.textAlign='center';
+      if(P){var hs=H0?m.gf:m.ga,as=H0?m.ga:m.gf;x.font='700 '+Math.round(70*s+6)+'px '+OF;x.fillStyle='#FFFFFF';x.fillText(hs+' - '+as,cx,cy+(70*s+6)*.36)}
+      else{x.font='800 '+Math.round(44*s+4)+'px '+DF;x.fillStyle='#FF8A8F';x.fillText('VS',cx,cy+(44*s+4)*.36)}
+      x.textAlign='left'}
+    x.fillStyle='rgba(255,255,255,.7)';x.font='600 28px '+BF;x.textAlign='center';x.fillText('TikTok @Novaskilfc  ·  X @NovaskilFC  ·  novaskil-fc.github.io',W/2,H-50);x.textAlign='left';
+  }
+  function fname(){return'novaskil-'+sel.value+'.png'}
+  function open(){var ds=days(),cur=(document.getElementById('dayFilter')||{}).value;
+    var def=ds.indexOf(cur)>=0?cur:(ds.filter(function(d){return d>=TODAY})[0]||ds[ds.length-1]);
+    sel.innerHTML=ds.map(function(d){var c=state.matches.filter(function(m){return m.date===d}),p=c.every(pl);return'<option value="'+d+'"'+(d===def?' selected':'')+'>'+dl(d)+' · '+c.length+' partido'+(c.length>1?'s':'')+(p?' · jugado':' · pendiente')+'</option>'}).join('');
+    document.getElementById('dimgSh').hidden=!(navigator.canShare&&window.File);
+    if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');draw(sel.value)}
+  document.getElementById('dayImgBtn').addEventListener('click',open);
+  document.getElementById('dimgClose').addEventListener('click',function(){dlg.close()});
+  dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close()});
+  sel.addEventListener('change',function(){draw(sel.value)});
+  document.getElementById('dimgDl').addEventListener('click',function(){cv.toBlob(function(b){var a=document.createElement('a'),u=URL.createObjectURL(b);a.href=u;a.download=fname();document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},2000)},'image/png')});
+  document.getElementById('dimgSh').addEventListener('click',function(){cv.toBlob(function(b){var f=new File([b],fname(),{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f],title:'Novaskil FC'}).catch(function(){});else document.getElementById('dimgDl').click()},'image/png')});
+})();
+
 document.getElementById('matchList').addEventListener('click',function(ev){var b=ev.target.closest('[data-sort]');if(b){sortBy=b.dataset.sort;render()}});
 document.getElementById('compSel').addEventListener('change',function(e){comp=e.target.value;render()});
 document.getElementById('matchList').addEventListener('click',function(e){var b=e.target.closest('[data-calm]');if(b){calM=b.dataset.calm;render();return}if(e.target.closest('#icsBtn'))icsDownload()});
