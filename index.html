@@ -581,6 +581,12 @@ h3.grp{letter-spacing:.01em}
 .chd{max-height:calc(100vh - 32px);overflow:auto}
 .tdt{display:block;font-size:.78rem;font-weight:700;opacity:.8;margin-top:.15rem}
 .tfd{font-weight:700;color:#F5C542;margin-top:.3rem}
+.lgs{font-size:.92rem}.lgs b{color:#fff}
+.lgempty{background:var(--card);border-radius:18px;padding:1.2rem 1.3rem}.lgempty p{margin:.4rem 0 0;color:var(--muted)}
+.lgnx{display:grid;gap:.6rem}.lgp .pbt{background:var(--bg);grid-column:auto;order:0}
+.lgp{display:grid;grid-template-columns:minmax(8rem,12rem) 1fr auto;align-items:center;gap:.8rem;background:var(--card);border-radius:14px;padding:.6rem .9rem}
+.lgp a{font-weight:700;color:inherit;text-decoration:none;overflow:hidden;text-overflow:ellipsis}.lgp a:hover{text-decoration:underline}
+@media (max-width:520px){.lgp{grid-template-columns:1fr auto}.lgp .pbt{grid-column:1/-1;grid-row:2}}
 .tlg{width:28px;height:28px;object-fit:contain;flex:none;display:inline-grid;place-items:center}
 .tlx{border-radius:50%;background:var(--line);font:800 .8rem var(--display);color:var(--muted)}
 .tt{display:inline-flex;align-items:center;gap:.6rem}
@@ -777,7 +783,7 @@ h3.grp{letter-spacing:.01em}
 
     <section data-v="leyendas" id="leyendas" aria-labelledby="h-ley">
       <h2 id="h-ley">Leyendas del club</h2>
-      <p class="lead">Los jugadores que han hecho grande a Novaskil FC: los que han levantado títulos y los que tienen los récords del club.</p>
+      <p class="lead">Solo los más grandes de Novaskil FC: jugadores con 100 partidos oficiales o más, o que han ganado títulos muy importantes siendo fijos en el equipo.</p>
       <div id="legBox" data-render=""></div>
     </section>
 
@@ -1255,17 +1261,16 @@ function titlesOf(n){var o=[];(state.trophies||[]).forEach(function(t){troEds(t)
 function edLabel(t,e,i){return e.y?e.y:(t.c||1)>1?'Título '+(i+1):''}
 function champHtml(t){var eds=troEds(t);return'<header class="chdh"><span class="chi">'+troIcon(t.k,56)+'</span><div><b>'+esc(t.n)+'</b><span class="cmeta">'+esc(t.p)+((t.c||1)>1?' · '+t.c+' títulos':'')+'</span></div></header>'+eds.map(function(e,i){var lb=edLabel(t,e,i);return'<div class="che">'+(lb?'<span class="chl">'+esc(lb)+'</span>':'')+(e.lu?'<div class="chlu">'+e.lu.map(function(g){return'<div class="chlr"><b class="chpos">'+esc(g[0])+'</b><div class="chps">'+g[1].map(plLink).join('')+'</div></div>'}).join('')+'</div>':(e.pl||[]).length?'<div class="chps">'+e.pl.map(plLink).join('')+'</div>':'<p class="cmeta">Plantilla campeona por confirmar.</p>')+(e.res&&e.res.length?(function(){var gf=0,ga=0,w=0;e.res.forEach(function(r){gf+=r[2];ga+=r[3];if(r[2]>r[3])w++});return'<h4 class="chrt">Camino al título</h4><p class="cmeta">'+w+' victorias en '+e.res.length+' partidos · '+gf+' goles a favor y '+ga+' en contra</p><ol class="chres">'+e.res.map(function(r){var k=r[2]>r[3]?'w':r[2]===r[3]?'d':'l';return'<li class="m-'+k+'"><span class="chf">'+esc(r[0])+'</span><span class="chr">'+logo(r[1])+'<span>'+esc(r[1])+'</span></span><b>'+r[2]+' - '+r[3]+'</b></li>'}).join('')+'</ol>'})():'')+'</div>'}).join('')}
 function renderChamps(){var hi=document.getElementById('troHint');if(hi)hi.hidden=!(state.trophies||[]).some(function(t){return!t.nopl})}
-function renderLegends(){var box=document.getElementById('legBox');if(!box)return;var h='';
-  var L=state.legends||[];
-  if(L.length)h+='<div class="lgg">'+L.map(function(l){var tt=titlesOf(l.n);return'<article class="lgc"><span class="lgk">'+esc(l.t||'Leyenda')+'</span><h3>'+plLink(l.n)+'</h3>'+(l.d?'<p>'+esc(l.d)+'</p>':'')+(tt.length?'<p class="lgt">🏆 '+tt.length+' título'+(tt.length>1?'s':'')+'</p>':'')+'</article>'}).join('')+'</div>';
-  var TC={};(state.trophies||[]).forEach(function(t){troEds(t).forEach(function(e,i){(e.pl||[]).forEach(function(n){(TC[n]=TC[n]||[]).push(t.n+(edLabel(t,e,i)?' ('+edLabel(t,e,i)+')':''))})})});
-  var tl=Object.keys(TC).sort(function(a,b){return TC[b].length-TC[a].length||a.localeCompare(b)});
-  h+='<h3 class="grp">Más títulos con Novaskil</h3>';
-  h+=tl.length?'<ol class="lgr">'+tl.map(function(n,i){return'<li><span class="rk">'+(i+1)+'</span><span class="lgn">'+plLink(n)+'</span><b class="lgc2">🏆 '+TC[n].length+'</b><span class="cmeta">'+esc(TC[n].join(' · '))+'</span></li>'}).join('')+'</ol>':'<p class="cmeta">Cuando estén confirmadas las plantillas campeonas de cada título, aquí saldrán los jugadores que más han ganado.</p>';
+function renderLegends(){var box=document.getElementById('legBox');if(!box)return;var LIM=100;
   var P={};state.matches.filter(function(m){return pl(m)&&m.date<=TODAY}).forEach(function(m){(m.lu||[]).forEach(function(x){var q=P[x.n]=P[x.n]||{n:x.n,a:0,g:0,s:0,mv:0};q.a++;q.g+=x.g||0;q.s+=x.a||0});if(m.mvp&&P[m.mvp])P[m.mvp].mv++});
-  var ps=Object.keys(P).map(function(k){return P[k]});
-  function top(ttl,ic,k,u){var a=ps.filter(function(q){return q[k]>0}).sort(function(x,y){return y[k]-x[k]||y.a-x.a}).slice(0,5);if(!a.length)return'';return'<article class="ldr"><span class="ldt">'+ic+' '+ttl+'</span><a class="ldn" href="#jugador/'+encodeURIComponent(a[0].n)+'">'+esc(a[0].n)+'</a><span class="ldv">'+a[0][k]+' '+u+'</span><ol>'+a.slice(1).map(function(q,i){return'<li><a href="#jugador/'+encodeURIComponent(q.n)+'">'+(i+2)+'. '+esc(q.n)+'</a><b>'+q[k]+'</b></li>'}).join('')+'</ol></article>'}
-  h+='<h3 class="grp">Récords históricos del club</h3><div class="ldrs">'+top('Más partidos','👕','a','partidos')+top('Más goles','⚽','g','goles')+top('Más asistencias','👟','s','asistencias')+top('Más veces MVP','⭐','mv','veces')+'</div><p class="cmeta">Con todos los partidos oficiales registrados en la web, incluidos los jugadores que ya no están.</p>';
+  var cur=(state.legends||[]),by={};cur.forEach(function(l){by[l.n]=l});
+  Object.keys(P).forEach(function(n){if(P[n].a>=LIM&&!by[n])by[n]={n:n,t:'Centenario'}});
+  var L=Object.keys(by).map(function(n){var l=by[n];l.st=P[n]||{a:0,g:0,s:0,mv:0};return l}).sort(function(a,b){return b.st.a-a.st.a});
+  var h='';
+  if(L.length)h+='<div class="lgg">'+L.map(function(l){var tt=titlesOf(l.n),s=l.st;return'<article class="lgc"><span class="lgk">'+esc(l.t||'Leyenda')+'</span><h3>'+plLink(l.n)+'</h3>'+(l.d?'<p>'+esc(l.d)+'</p>':'')+'<p class="lgs"><b>'+s.a+'</b> partidos · <b>'+s.g+'</b> goles · <b>'+s.s+'</b> asist. · <b>'+s.mv+'</b> MVP</p>'+(tt.length?'<p class="lgt">🏆 '+tt.map(function(o){return esc(o.t.n)}).join(' · ')+'</p>':'')+'</article>'}).join('')+'</div>';
+  else h+='<div class="lgempty"><b>Todavía no hay leyendas.</b><p>Solo entran los jugadores que lleguen a los '+LIM+' partidos oficiales con el club, o los que ganen títulos muy importantes habiendo jugado muchos partidos.</p></div>';
+  var nx=Object.keys(P).map(function(n){return P[n]}).filter(function(q){return q.a<LIM&&!by[q.n]&&(state.squad||[]).some(function(s){return s.n===q.n})}).sort(function(a,b){return b.a-a.a}).slice(0,6);
+  if(nx.length)h+='<h3 class="grp">Camino a los '+LIM+' partidos</h3><div class="lgnx">'+nx.map(function(q){return'<div class="lgp"><a href="#jugador/'+encodeURIComponent(q.n)+'">'+esc(q.n)+'</a><span class="pbt"><i style="width:'+(q.a/LIM*100).toFixed(1)+'%"></i></span><span class="cmeta">'+q.a+' / '+LIM+' · le faltan '+(LIM-q.a)+'</span></div>'}).join('')+'</div>';
   box.innerHTML=h}
 function renderTrophies(){
   var ts=state.trophies||[],tot=ts.reduce(function(a,t){return a+(t.c||0)},0),ord=['PS5','PS4'];
