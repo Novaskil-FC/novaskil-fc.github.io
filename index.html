@@ -431,6 +431,22 @@ a.pl:hover,a.ldn:hover,.ldr li a:hover{text-decoration:underline}
 .pfil button[aria-pressed="true"] b{color:#fff}
 .pfc button{font-size:.82rem;padding:.3rem .7rem}
 .pml{cursor:pointer}.pml:hover circle:nth-of-type(2){fill:#FF4A52}.pml:hover .pnb{fill:rgba(215,38,45,.85)}
+a.clk{text-decoration:none;cursor:pointer}a.clk:hover{outline:2px solid var(--accent);outline-offset:1px}
+.mtc{background:var(--pitch);color:#fff;border-radius:99px;padding:.1rem .6rem;font-size:.8rem;font-weight:700}
+a.tlk{color:inherit;text-decoration:none}a.tlk:hover{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px}
+.thd{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;margin:1rem 0 1.5rem}
+.thd h2{margin:0;overflow-wrap:anywhere}.thd .btn{margin-left:auto}
+.tlg.tbig{width:88px;height:88px}
+.tst{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem}
+.tsc{display:flex;flex-direction:column;gap:.25rem;background:var(--card);border-radius:16px;padding:1rem 1.1rem;text-decoration:none;color:inherit;border-left:6px solid var(--line)}
+.tsc:hover{outline:2px solid var(--accent)}
+.tsc.zu{border-left-color:#1E8A4C}.tsc.zp{border-left-color:#E0A81E}.tsc.zd{border-left-color:#C23B3B}
+.tsc .nxc{align-self:flex-start}
+.tpos{font:800 2rem var(--display)}.tpts b{font:800 1.1rem var(--display)}
+.tzone{font-size:.85rem;font-weight:700}
+.tld{margin-bottom:1rem}
+.tbl.tpl td:nth-child(n+3),.tbl.tpl th:nth-child(n+3){text-align:right}
+.tbl.tpl .lr{display:inline-block;min-width:2.8rem;color:#fff;font-weight:800;text-align:center;border-radius:8px;padding:.15rem .4rem}
 .tlg{width:28px;height:28px;object-fit:contain;flex:none;display:inline-grid;place-items:center}
 .tlx{border-radius:50%;background:var(--line);font:800 .8rem var(--display);color:var(--muted)}
 .tt{display:inline-flex;align-items:center;gap:.6rem}
@@ -677,6 +693,10 @@ a.pl:hover,a.ldn:hover,.ldr li a:hover{text-decoration:underline}
       <div id="mBox" data-render=""></div>
     </section>
 
+    <section data-v="equipo" id="equipo" aria-live="polite">
+      <div id="tBox" data-render=""></div>
+    </section>
+
     <section data-v="jugador" id="jugador" aria-live="polite">
       <div id="pBox" data-render=""></div>
     </section>
@@ -728,11 +748,11 @@ function nk(n){return String(n).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerC
 var LM={};'rcd-robacobre rikisimo-splash nyto-esports novaskil-fc aguilas-doradas athletic-vortex venus-esports sinsajo-imperial adictos-cf elbayo futbol-papa-fc iberican-armour th-original-fc prime-kronos the-furias-esports schalke-temeto prime-sports street-legends black-owls-fc k4mikaze-esports nexo-arena-club motilones-fcd sobrenaturales-fc krutz-esports asylum-gaming sector-colokon evils-rabbits atletico-tempestad aureon-esports rex-taurus-fc payo-vallecanoo plaza-barcelona troit1a-lgf acho-team pibes-locos fererico-pn siblings-fc rovella-esports lospimpollos biota-fc 928-fc real-tauros golden-lions los-kangris-fc m0dx-gaming genesis-esports racing-spain'.split(' ').forEach(function(s){LM[nk(s)]=s});
 function logo(n){var s=LM[nk(n)];return s?'<img class="tlg" src="logos/'+s+'.png" alt="" width="28" height="28" loading="lazy" decoding="async">':'<span class="tlg tlx" aria-hidden="true">'+esc(String(n).charAt(0).toUpperCase())+'</span>'}
 function haTag(m){return m.home===true?'<i class="ha h">Local</i>':m.home===false?'<i class="ha a">Visitante</i>':''}
-function scLine(m,p){var A='<span class="tm">'+logo('Novaskil FC')+'<span>Novaskil FC</span></span>',B='<span class="tm">'+logo(m.rival)+'<span>'+esc(m.rival)+'</span></span>',away=m.home===false;
+function scLine(m,p){var A='<span class="tm">'+logo('Novaskil FC')+'<span>Novaskil FC</span></span>',B='<span class="tm">'+tLink(m.rival,logo(m.rival))+tLink(m.rival)+'</span>',away=m.home===false;
   var L=away?B:A,R=(away?A:B).replace('class="tm"','class="tm tr"');
   return'<div class="sc'+(away?' away':'')+'">'+L+'<strong>'+(p?(away?m.ga+' - '+m.gf:m.gf+' - '+m.ga):'vs')+'</strong>'+R+'</div>'}
 function card(m){
-  var p=pl(m),k=p?rs(m):'u',h='<article class="match m-'+k+'"><div class="mt"><span>'+esc(fd(m))+'</span><span class="mtr">'+haTag(m)+'<b>'+esc(m.comp)+'</b></span></div>'+scLine(m,p)+'<div class="mini"><span class="tagr">'+(p?T[k]:(m.date<TODAY?'Pendiente de jugar':'Próximo partido'))+'</span>'+(p&&m.mvp?'<a class="mvp" href="#jugador/'+encodeURIComponent(m.mvp)+'">⭐ MVP: '+esc(m.mvp)+'</a>':'');
+  var p=pl(m),k=p?rs(m):'u',h='<article class="match m-'+k+'"><div class="mt"><span>'+esc(fd(m))+'</span><span class="mtr">'+haTag(m)+cLink(m.comp,'mtc')+'</span></div>'+scLine(m,p)+'<div class="mini"><span class="tagr">'+(p?T[k]:(m.date<TODAY?'Pendiente de jugar':'Próximo partido'))+'</span>'+(p&&m.mvp?'<a class="mvp" href="#jugador/'+encodeURIComponent(m.mvp)+'">⭐ MVP: '+esc(m.mvp)+'</a>':'');
   if(canEdit){
     if(!p)h+='<input type="number" min="0" max="99" aria-label="Goles Novaskil" data-gf="'+m.id+'"><input type="number" min="0" max="99" aria-label="Goles rival" data-ga="'+m.id+'"><button class="btn main" style="padding:.3rem .9rem" data-act="res" data-id="'+m.id+'">Guardar</button>';
     h+='<button class="xbtn" data-act="del" data-id="'+m.id+'">Borrar</button>';
@@ -744,7 +764,7 @@ function bar(pm){var c={w:0,d:0,l:0},n=pm.length;if(!n)return'';pm.forEach(funct
 var TODAY=(function(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')})();
 function upcoming(ms){return ms.filter(function(m){return !pl(m)&&m.date>=TODAY}).sort(function(a,b){return key(a)<key(b)?-1:1})}
 function nxRow(m){var H=m.home!==false,hn=H?'Novaskil FC':m.rival,an=H?m.rival:'Novaskil FC',hs=hist(m.rival);
-  return'<li class="nx"><details><summary class="nxs"><span class="nxd">'+esc(fd(m))+'</span><b class="nxc">'+esc(m.comp)+'</b><span class="nxt"><span class="nxa'+(H?' us':'')+'">'+logo(hn)+'<span>'+esc(hn)+'</span></span><span class="nxv">vs</span><span class="nxa nxb'+(H?'':' us')+'"><span>'+esc(an)+'</span>'+logo(an)+'</span></span><span class="nxh">'+haTag(m)+'</span><span class="nxi">'+(hs.length?'Historial ('+hs.length+')':'Sin precedentes')+'</span></summary>'+histBox(m.rival)+'</details></li>'}
+  return'<li class="nx"><details><summary class="nxs"><span class="nxd">'+esc(fd(m))+'</span>'+cLink(m.comp)+'<span class="nxt"><span class="nxa'+(H?' us':'')+'">'+logo(hn)+'<span>'+tLink(hn)+'</span></span><span class="nxv">vs</span><span class="nxa nxb'+(H?'':' us')+'"><span>'+tLink(an)+'</span>'+logo(an)+'</span></span><span class="nxh">'+haTag(m)+'</span><span class="nxi">'+(hs.length?'Historial ('+hs.length+')':'Sin precedentes')+'</span></summary>'+histBox(m.rival)+'</details></li>'}
 function hist(rv,ex){var k=nk(rv);return state.matches.filter(function(m){return pl(m)&&nk(m.rival)===k&&m.id!==ex}).sort(function(a,b){return key(b)<key(a)?-1:1})}
 function scoreTxt(m){return m.home===false?m.ga+' - '+m.gf:m.gf+' - '+m.ga}
 function histBox(rv,ex){var ms=hist(rv,ex);if(!ms.length)return'<p class="cmeta hbx">Nunca hemos jugado contra '+esc(rv)+'.</p>';
@@ -789,8 +809,8 @@ window.nvMatch=function(id){
   if(!m){box.innerHTML=back+'<h2>Partido no encontrado</h2>';return}
   var p=pl(m),k=p?rs(m):'u',H=m.home!==false,hn=H?'Novaskil FC':m.rival,an=H?m.rival:'Novaskil FC';
   document.title=hn+' - '+an+' | Novaskil FC';
-  var h=back+'<header class="mh m-'+k+'"><div class="mhm"><span>'+esc(fd(m))+'</span>'+haTag(m)+'<b class="nxc">'+esc(m.comp)+'</b></div><div class="mhs"><div class="mht">'+logo(hn)+'<b>'+esc(hn)+'</b></div><strong>'+(p?scoreTxt(m):'vs')+'</strong><div class="mht">'+logo(an)+'<b>'+esc(an)+'</b></div></div><p class="mhr">'+(p?T[k]+' de Novaskil FC':(m.date<TODAY?'Pendiente de jugar':'Próximo partido'))+(m.mvp?' · <a class="mvp" href="#jugador/'+encodeURIComponent(m.mvp)+'">⭐ MVP: '+esc(m.mvp)+'</a>':'')+'</p></header><div id="mDet"><p class="cmeta">Cargando estadísticas…</p></div>';
-  h+='<h3 class="grp">Historial contra '+esc(m.rival)+'</h3>'+histBox(m.rival,m.id);
+  var h=back+'<header class="mh m-'+k+'"><div class="mhm"><span>'+esc(fd(m))+'</span>'+haTag(m)+cLink(m.comp)+'</div><div class="mhs"><div class="mht">'+tLink(hn,logo(hn))+'<b>'+tLink(hn)+'</b></div><strong>'+(p?scoreTxt(m):'vs')+'</strong><div class="mht">'+tLink(an,logo(an))+'<b>'+tLink(an)+'</b></div></div><p class="mhr">'+(p?T[k]+' de Novaskil FC':(m.date<TODAY?'Pendiente de jugar':'Próximo partido'))+(m.mvp?' · <a class="mvp" href="#jugador/'+encodeURIComponent(m.mvp)+'">⭐ MVP: '+esc(m.mvp)+'</a>':'')+'</p></header><div id="mDet"><p class="cmeta">Cargando estadísticas…</p></div>';
+  h+='<h3 class="grp">Historial contra '+tLink(m.rival)+'</h3>'+histBox(m.rival,m.id)+'<p><a class="nowmore" href="#equipo/'+encodeURIComponent(m.rival)+'">Ver ficha completa de '+esc(m.rival)+' →</a></p>';
   box.innerHTML=h;
   loadDet().then(function(D){
     var el=document.getElementById('mDet');if(!el||location.hash.indexOf(id)<0)return;
@@ -915,9 +935,41 @@ function recView(mine){
   if(ht.length)h+='<details class="lud"><summary>Ver todos los hat-tricks</summary><ul class="recl">'+ht.map(function(x){return'<li><b>'+esc(x.n)+' · '+x.g+' goles</b>'+lnk(x.m)+'</li>'}).join('')+'</ul></details>';
   return h;
 }
+var TID={'rcd-robacobre':191,'rikisimo-splash':1291,'nyto-esports':76,'novaskil-fc':1271,'aguilas-doradas':230,'athletic-vortex':1251,'venus-esports':405,'sinsajo-imperial':715,'adictos-cf':461,'elbayo':1353,'futbol-papa-fc':232,'iberican-armour':1261,'th-original-fc':1281,'prime-kronos':1263,'the-furias-esports':1365,'schalke-temeto':1361,'prime-sports':1274,'street-legends':49,'black-owls-fc':322,'k4mikaze-esports':1262,'nexo-arena-club':1268,'motilones-fcd':670,'sobrenaturales-fc':1280,'krutz-esports':1342,'asylum-gaming':1336,'sector-colokon':1278,'evils-rabbits':1258,'atletico-tempestad':1337,'aureon-esports':1304,'rex-taurus-fc':1276,'payo-vallecanoo':77,'plaza-barcelona':1100,'troit1a-lgf':404,'acho-team':1335,'pibes-locos':1273,'fererico-pn':51,'siblings-fc':1279,'rovella-esports':1277,'lospimpollos':1343,'biota-fc':639,'928-fc':1248,'real-tauros':1309,'golden-lions':399,'los-kangris-fc':336,'m0dx-gaming':256,'genesis-esports':79,'racing-spain':1275};
+function isUs(n){return /novaskil/i.test(n)}
+function cLink(c,cls){return'<a class="'+(cls||'nxc')+' clk" href="#clasificacion/'+encodeURIComponent(c)+'" title="Ver clasificación de '+esc(c)+'">'+esc(c)+'</a>'}
+function tLink(n,inner){return isUs(n)?(inner||esc(n)):'<a class="tlk" href="#equipo/'+encodeURIComponent(n)+'" title="Ver ficha de '+esc(n)+'">'+(inner||esc(n))+'</a>'}
+window.nvTeam=function(name){
+  var box=document.getElementById('tBox');if(!box)return;var k=nk(name);
+  var ms=state.matches.filter(function(m){return nk(m.rival)===k});
+  var disp=ms.length?ms[ms.length-1].rival:name,rows=[];
+  COMPS.forEach(function(c){var r=(state.stand||{})[c]||[];r.forEach(function(x,i){if(nk(x[0])===k){rows.push({c:c,i:i,x:x,n:r.length});disp=x[0]}})});
+  document.title=disp+' | Novaskil FC';
+  var slug=LM[k],id=slug?TID[slug]:null;
+  var h='<p><a class="back" href="#partidos">← Volver a partidos</a></p><header class="thd">'+logo(disp).replace('class="tlg','class="tlg tbig"')+'<div><h2>'+esc(disp)+'</h2><p class="cmeta">'+(rows.length?'Juega '+rows.map(function(r){return esc(r.c)}).join(', '):'Rival de Novaskil FC')+'</p></div>'+(id?'<a class="btn" href="https://www.eafcstats.es/team/'+id+'" target="_blank" rel="noopener">Ver en EA FC Stats</a>':'')+'</header>';
+  if(rows.length){h+='<h3 class="grp">En la clasificación</h3><div class="tst">'+rows.map(function(r){var x=r.x,z=(state.zones||{})[r.c]||{},zc=r.i<(z.up||0)?'zu':r.i<(z.up||0)+(z.po||0)?'zp':(z.down&&r.i>=r.n-z.down)?'zd':'';
+    return'<a class="tsc '+zc+'" href="#clasificacion/'+encodeURIComponent(r.c)+'"><span class="nxc">'+esc(r.c)+'</span><b class="tpos">'+(r.i+1)+'.º</b><span class="tpts"><b>'+x[8]+'</b> pts</span><span class="cmeta">'+x[1]+' PJ · '+x[2]+'V '+x[3]+'E '+x[4]+'D · '+x[5]+'-'+x[6]+' ('+(x[7]>0?'+':'')+x[7]+')</span>'+(zc?'<span class="tzone">'+(zc==='zu'?'Puesto de ascenso':zc==='zp'?'Puesto de playoff':'Puesto de descenso')+'</span>':'')+'</a>'}).join('')+'</div>'}
+  var up=ms.filter(function(m){return!pl(m)&&m.date>=TODAY}).sort(function(a,b){return key(a)<key(b)?-1:1});
+  if(up.length)h+='<h3 class="grp">Próximos partidos contra Novaskil</h3><ul class="nxl">'+up.map(nxRow).join('')+'</ul>';
+  h+='<h3 class="grp">Historial contra Novaskil</h3>'+histBox(disp);
+  h+='<div id="tPlayers"><p class="cmeta">Cargando sus jugadores…</p></div>';
+  box.innerHTML=h;
+  loadDet().then(function(D){
+    var el=document.getElementById('tPlayers');if(!el||location.hash.indexOf('equipo/')<0)return;
+    var P={},nm=0;ms.filter(pl).forEach(function(m){var d=D[m.id];if(!d)return;nm++;d.rv.forEach(function(x){var q=P[x[0]]=P[x[0]]||{n:x[0],l:{},a:0,g:0,s:0,mv:0,r:[]};q.a++;q.g+=x[2];q.s+=x[3];q.mv+=x[5];if(x[4])q.r.push(x[4]);q.l[x[1]]=(q.l[x[1]]||0)+1})});
+    var ps=Object.keys(P).map(function(k){var q=P[k];q.m=avg(q.r);q.pos=Object.keys(q.l).sort(function(a,b){return q.l[b]-q.l[a]})[0];return q}).sort(function(a,b){return b.a-a.a||b.g-a.g||((b.m||0)-(a.m||0))});
+    if(!ps.length){el.innerHTML='';return}
+    var LN={g:'POR',d:'DEF',m:'MED',f:'DEL'},tg=ps.slice().sort(function(a,b){return b.g-a.g})[0],tb=ps.filter(function(q){return q.m!=null&&q.a>=Math.min(2,nm)}).sort(function(a,b){return b.m-a.m})[0];
+    var o='<h3 class="grp">Sus jugadores contra Novaskil</h3>';
+    o+='<div class="ldrs tld">'+(tg&&tg.g?'<article class="ldr"><span class="ldt">⚽ Nos ha marcado más</span><b class="ldn">'+esc(tg.n)+'</b><span class="ldv">'+tg.g+'</span></article>':'')+(tb?'<article class="ldr"><span class="ldt">★ Mejor nota contra nosotros</span><b class="ldn">'+esc(tb.n)+'</b><span class="ldv">'+f1(tb.m)+'</span></article>':'')+'</div>';
+    o+='<div class="scroll"><table class="tbl tpl"><thead><tr><th>Jugador</th><th>Línea</th><th>PJ</th><th>Goles</th><th>Asist.</th><th>MVP</th><th>Nota media</th></tr></thead><tbody>'+ps.map(function(q){return'<tr><td>'+esc(q.n)+'</td><td>'+(LN[q.pos]||'')+'</td><td>'+q.a+'</td><td>'+q.g+'</td><td>'+q.s+'</td><td>'+(q.mv||'')+'</td><td><span class="lr" style="background:'+rc(q.m)+'">'+f1(q.m)+'</span></td></tr>'}).join('')+'</tbody></table></div><p class="cmeta">Datos de los '+nm+' partido'+(nm>1?'s':'')+' que hemos jugado contra ellos con estadísticas.</p>';
+    el.innerHTML=o;
+  });
+};
+window.nvGoComp=function(c){comp=COMPS.indexOf(c)>=0?c:'all';view='cla';var s=document.getElementById('compSel');if(s)s.value=comp;render()};
 function standTable(c){
   var rows=(state.stand||{})[c]||[],h='<h3 class="grp">'+esc(c)+'</h3>';
-  if(rows.length)h+='<div class="scroll"><table class="tbl"><thead><tr><th>#</th><th>Equipo</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>DG</th><th>Pts</th></tr></thead><tbody>'+rows.map(function(x,i){var z=(state.zones||{})[c]||{},zc=i<(z.up||0)?'zu':i<(z.up||0)+(z.po||0)?'zp':(z.down&&i>=rows.length-z.down)?'zd':'';return'<tr class="'+zc+(/novaskil/i.test(x[0])?' me':'')+'"><td>'+(i+1)+'</td><td><span class="tt">'+logo(x[0])+esc(x[0])+'</span></td>'+x.slice(1).map(function(v){return'<td>'+v+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table></div>';
+  if(rows.length)h+='<div class="scroll"><table class="tbl"><thead><tr><th>#</th><th>Equipo</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>DG</th><th>Pts</th></tr></thead><tbody>'+rows.map(function(x,i){var z=(state.zones||{})[c]||{},zc=i<(z.up||0)?'zu':i<(z.up||0)+(z.po||0)?'zp':(z.down&&i>=rows.length-z.down)?'zd':'';return'<tr class="'+zc+(/novaskil/i.test(x[0])?' me':'')+'"><td>'+(i+1)+'</td><td><span class="tt">'+logo(x[0])+tLink(x[0])+'</span></td>'+x.slice(1).map(function(v){return'<td>'+v+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table></div>';
   else h+='<p class="lead">Aún no hay clasificación de esta competición.</p>';
   var z=(state.zones||{})[c];
   if(rows.length)h+=promoBox(c);
@@ -973,7 +1025,7 @@ function render(){
   renderSquad();
   nowBox();
   var stg=document.getElementById('seasonTag');if(stg)stg.textContent=(state.season&&state.season.name)||'';
-  var hh=decodeURIComponent((location.hash||'').slice(1));if(hh.indexOf('jugador/')===0)window.nvPlayer(hh.slice(8));if(hh.indexOf('partido/')===0)window.nvMatch(hh.slice(8));
+  var hh=decodeURIComponent((location.hash||'').slice(1));if(hh.indexOf('jugador/')===0)window.nvPlayer(hh.slice(8));if(hh.indexOf('partido/')===0)window.nvMatch(hh.slice(8));if(hh.indexOf('equipo/')===0)window.nvTeam(hh.slice(7));
 }
 var ROSTER=['damiian_1010','MagusitoTV','juanpemomar','LPE_Ivito','Ulises-Argos','PYF_RODRIGO','huevojun','Xx_PsIcOpAtX_xX','Sr_Amaya','marius_p_lz','adri_man18','tetekohete','floorovk879','pedritoxgallo','berna_defensor','Sisan_23','peliflowbakano'],POS=['POR','DFC','DFC','DFC','CAI','MC','MC','CAD','MCO','DC','DC'];
 function syncRoster(){if(state.squad&&state.squad.length)ROSTER=state.squad.map(function(q){return q.n})}
@@ -1152,7 +1204,7 @@ function squadHook(mv){
 function nowBox(){
   var el=document.getElementById('nowBox');if(!el)return;
   var ap=state.matches.filter(function(m){return pl(m)&&m.date<=TODAY}).sort(function(a,b){return key(b)<key(a)?-1:1}),up=upcoming(state.matches),h='';
-  if(ap.length){var m=ap[0],k=rs(m);h+='<article class="nowc m-'+k+'"><span class="nowt">Último resultado</span><div class="nows">'+(m.home===false?logo(m.rival)+'<strong>'+m.ga+' - '+m.gf+'</strong>'+logo('Novaskil FC'):logo('Novaskil FC')+'<strong>'+m.gf+' - '+m.ga+'</strong>'+logo(m.rival))+'</div><p class="nowr">'+T[k]+' ante <b>'+esc(m.rival)+'</b> '+haTag(m)+'</p><p class="cmeta">'+esc(m.comp)+' · '+esc(fd(m))+'</p>'+(m.mvp?'<a class="mvp" href="#jugador/'+encodeURIComponent(m.mvp)+'">⭐ MVP: '+esc(m.mvp)+'</a>':'')+'</article>'}
+  if(ap.length){var m=ap[0],k=rs(m);h+='<article class="nowc m-'+k+'"><span class="nowt">Último resultado</span><div class="nows">'+(m.home===false?logo(m.rival)+'<strong>'+m.ga+' - '+m.gf+'</strong>'+logo('Novaskil FC'):logo('Novaskil FC')+'<strong>'+m.gf+' - '+m.ga+'</strong>'+logo(m.rival))+'</div><p class="nowr">'+T[k]+' ante <b>'+tLink(m.rival)+'</b> '+haTag(m)+'</p><p class="cmeta">'+esc(m.comp)+' · '+esc(fd(m))+'</p>'+(m.mvp?'<a class="mvp" href="#jugador/'+encodeURIComponent(m.mvp)+'">⭐ MVP: '+esc(m.mvp)+'</a>':'')+'</article>'}
   if(up.length){var n=up[0],same=up.filter(function(x){return x.date===n.date});h+='<article class="nowc next"><span class="nowt">Próximo partido</span><div class="nows">'+(n.home===false?logo(n.rival)+'<strong>vs</strong>'+logo('Novaskil FC'):logo('Novaskil FC')+'<strong>vs</strong>'+logo(n.rival))+'</div><p class="nowr"><b>'+esc(n.rival)+'</b> '+haTag(n)+'</p><p class="cmeta">'+esc(n.comp)+' · '+esc(fd(n))+'</p><a class="nowmore" href="#partidos">'+(same.length>1?'Ese día hay '+same.length+' partidos. Ver calendario':'Ver calendario')+'</a></article>'}
   h+=promoHome();
   el.innerHTML=h;el.parentElement.style.display=h?'':'none';
@@ -1318,10 +1370,12 @@ function show(){
   var mid=null;
   if(raw.indexOf('jugador/')===0){pn=raw.slice(8);h='jugador'}
   else if(raw.indexOf('partido/')===0){mid=raw.slice(8);h='partido'}
+  else if(raw.indexOf('equipo/')===0){var tn=raw.slice(7);h='equipo';setTimeout(function(){if(window.nvTeam)window.nvTeam(tn)},0)}
+  else if(raw.indexOf('clasificacion/')===0){var cn=raw.slice(14);h='partidos';if(window.nvGoComp)window.nvGoComp(cn)}
   else{if(V.indexOf(h)<0)h=first?lastSec():'';if(V.indexOf(h)<0)h='inicio';document.title='Novaskil FC | Clubes Pro EA FC 27'}
   first=false;menu(false);
   document.querySelectorAll('[data-v]').forEach(function(e){e.hidden=e.dataset.v!==h});
-  var navh=h==='jugador'?'plantilla':h==='partido'?'partidos':h;
+  var navh=h==='jugador'?'plantilla':(h==='partido'||h==='equipo')?'partidos':h;
   document.querySelectorAll('nav a').forEach(function(a){if(a.getAttribute('href')==='#'+navh)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
   if(pn!==null&&window.nvPlayer)window.nvPlayer(pn);
   if(mid!==null&&window.nvMatch)window.nvMatch(mid);
