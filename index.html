@@ -1322,7 +1322,7 @@ function chart(ms,n){
 window.nvPlayer=function(n){
   var box=document.getElementById('pBox');if(!box)return;
   var sq=(state.squad||[]).filter(function(q){return q.n===n})[0],d=pStats(n),s=d.s,m=avg(s.r);
-  var pos=sq?sq.pos:(Object.keys(s.pos).sort(function(a,b){return s.pos[b]-s.pos[a]})[0]||'');
+  var pos=sq?mainPos(sq):(Object.keys(s.pos).sort(function(a,b){return s.pos[b]-s.pos[a]})[0]||'');
   var PN={POR:'Portero',DFC:'Defensa central',CAR:'Carrilero',CAI:'Carrilero izquierdo',CAD:'Carrilero derecho',MC:'Mediocentro',MCO:'Mediocentro ofensivo',DC:'Delantero centro'};
   document.title=n+' | Novaskil FC';
   var h='<p><a class="back" href="#plantilla">← Volver a la plantilla</a></p>';
@@ -1349,11 +1349,13 @@ window.nvPlayer=function(n){
     var vis=0;box.querySelectorAll('#pmList li').forEach(function(li){var ok=(fk==='all'||(' '+li.dataset.pk+' ').indexOf(' '+fk+' ')>=0)&&(!fc||li.dataset.pc===fc);li.hidden=!ok;if(ok)vis++});
     var hd=document.getElementById('pmHead');if(hd)hd.textContent='Partidos jugados ('+vis+')';document.getElementById('pmEmpty').hidden=vis>0};
 };
+function mainPos(q){var G={CAI:'CAR',CAD:'CAR'},c={};state.matches.forEach(function(m){if(!pl(m))return;(m.lu||[]).forEach(function(x){if(x.n===q.n){var k=G[x.p]||x.p;c[k]=(c[k]||0)+1}})});
+  var ks=Object.keys(c).sort(function(a,b){return c[b]-c[a]});if(!ks.length)return q.pos;if(ks.length>1&&c[ks[0]]===c[ks[1]]&&(ks[0]===q.pos||ks[1]===q.pos))return q.pos;return ks[0]}
 function renderSquad(){
   var sq=state.squad||[];
   document.getElementById('squadLead').textContent='Los '+sq.length+' jugadores de Novaskil FC. Pulsa en un jugador para ver su ficha.';
   document.getElementById('squadBox').innerHTML=SG.map(function(g){
-    var ps=sq.filter(function(q){return q.pos===g[0]});if(!ps.length)return'';
+    var ps=sq.filter(function(q){return mainPos(q)===g[0]});if(!ps.length)return'';
     return'<h3 class="grp">'+g[1]+'</h3><div class="cards">'+ps.map(function(q){
       var ps2=pStats(q.n),s=ps2.s,mr=avg(s.r);
       var inner='<span class="pc-top"><b class="pc-pos">'+g[0]+'</b><span class="pc-rt" style="background:'+rc(mr)+'">'+f1(mr)+'</span></span><img class="pc-crest" src="crest.png" alt="" width="46" height="54" loading="lazy"><span class="pc-name">'+esc(q.n)+'</span><span class="pc-st"><span><b>'+s.a+'</b>PJ</span><span><b>'+s.g+'</b>Goles</span><span><b>'+s.s+'</b>Asist.</span><span><b>'+s.mvp+'</b>MVP</span></span>';
