@@ -447,6 +447,8 @@ a.tlk{color:inherit;text-decoration:none}a.tlk:hover{text-decoration:underline;t
 .tld{margin-bottom:1rem}
 .tbl.tpl td:nth-child(n+3),.tbl.tpl th:nth-child(n+3){text-align:right}
 .tbl.tpl .lr{display:inline-block;min-width:2.8rem;color:#fff;font-weight:800;text-align:center;border-radius:8px;padding:.15rem .4rem}
+.hl li[hidden]{display:none}
+.tbl.tpl th .sortb{font-weight:600}
 .tlg{width:28px;height:28px;object-fit:contain;flex:none;display:inline-grid;place-items:center}
 .tlx{border-radius:50%;background:var(--line);font:800 .8rem var(--display);color:var(--muted)}
 .tt{display:inline-flex;align-items:center;gap:.6rem}
@@ -771,7 +773,7 @@ function histBox(rv,ex){var ms=hist(rv,ex);if(!ms.length)return'<p class="cmeta 
   var c={w:0,d:0,l:0,gf:0,ga:0};ms.forEach(function(m){c[rs(m)]++;c.gf+=m.gf;c.ga+=m.ga});
   var bc={};ms.forEach(function(m){var q=bc[m.comp]=bc[m.comp]||{n:0,w:0,d:0,l:0};q.n++;q[rs(m)]++});
   var cs=COMPS.filter(function(x){return bc[x]}).map(function(x){var q=bc[x];return'<span class="hcomp"><b class="nxc">'+esc(x)+'</b> '+q.n+' · <span class="w">'+q.w+'V</span> <span class="d">'+q.d+'E</span> <span class="l">'+q.l+'D</span></span>'}).join('');
-  return'<div class="hbx"><p class="hsum"><b>'+ms.length+'</b> partido'+(ms.length>1?'s':'')+' · <span class="w">'+c.w+'V</span> <span class="d">'+c.d+'E</span> <span class="l">'+c.l+'D</span> · goles '+c.gf+'-'+c.ga+'</p>'+(Object.keys(bc).length>1?'<div class="hcs">'+cs+'</div>':'')+'<ul class="hl">'+ms.map(function(m){var k=rs(m),H=m.home!==false;return'<li><a href="#partido/'+m.id+'"><span class="cmeta">'+esc(fd(m))+'</span><b class="nxc">'+esc(m.comp)+'</b><span class="hsc">'+esc(H?'Novaskil FC':m.rival)+' <b>'+scoreTxt(m)+'</b> '+esc(H?m.rival:'Novaskil FC')+'</span><span class="hres m-'+k+'">'+L[k]+'</span></a></li>'}).join('')+'</ul></div>'}
+  return'<div class="hbx"><p class="hsum"><b>'+ms.length+'</b> partido'+(ms.length>1?'s':'')+' · <span class="w">'+c.w+'V</span> <span class="d">'+c.d+'E</span> <span class="l">'+c.l+'D</span> · goles '+c.gf+'-'+c.ga+'</p>'+(Object.keys(bc).length>1?'<div class="hcs">'+cs+'</div>':'')+'<ul class="hl">'+ms.map(function(m){var k=rs(m),H=m.home!==false;return'<li data-c="'+esc(m.comp)+'" data-r="'+k+'"><a href="#partido/'+m.id+'"><span class="cmeta">'+esc(fd(m))+'</span><b class="nxc">'+esc(m.comp)+'</b><span class="hsc">'+esc(H?'Novaskil FC':m.rival)+' <b>'+scoreTxt(m)+'</b> '+esc(H?m.rival:'Novaskil FC')+'</span><span class="hres m-'+k+'">'+L[k]+'</span></a></li>'}).join('')+'</ul></div>'}
 var DET=null,detP=null;
 function loadDet(){if(DET)return Promise.resolve(DET);if(!detP)detP=fetch('detalles.json').then(function(r){return r.ok?r.json():{}}).catch(function(){return{}}).then(function(d){DET=d;return d});return detP}
 function pitchSvg(us,them,rvName){
@@ -951,9 +953,14 @@ window.nvTeam=function(name){
     return'<a class="tsc '+zc+'" href="#clasificacion/'+encodeURIComponent(r.c)+'"><span class="nxc">'+esc(r.c)+'</span><b class="tpos">'+(r.i+1)+'.º</b><span class="tpts"><b>'+x[8]+'</b> pts</span><span class="cmeta">'+x[1]+' PJ · '+x[2]+'V '+x[3]+'E '+x[4]+'D · '+x[5]+'-'+x[6]+' ('+(x[7]>0?'+':'')+x[7]+')</span>'+(zc?'<span class="tzone">'+(zc==='zu'?'Puesto de ascenso':zc==='zp'?'Puesto de playoff':'Puesto de descenso')+'</span>':'')+'</a>'}).join('')+'</div>'}
   var up=ms.filter(function(m){return!pl(m)&&m.date>=TODAY}).sort(function(a,b){return key(a)<key(b)?-1:1});
   if(up.length)h+='<h3 class="grp">Próximos partidos contra Novaskil</h3><ul class="nxl">'+up.map(nxRow).join('')+'</ul>';
-  h+='<h3 class="grp">Historial contra Novaskil</h3>'+histBox(disp);
+  var hms=hist(disp),hcs={};hms.forEach(function(m){hcs[m.comp]=1});
+  h+='<h3 class="grp">Historial contra Novaskil</h3>';
+  if(hms.length>1)h+='<div class="pfsel"><label class="sel">Competición<select id="thC"><option value="">Todas</option>'+COMPS.filter(function(c){return hcs[c]}).map(function(c){return'<option>'+esc(c)+'</option>'}).join('')+'</select></label><label class="sel">Resultado<select id="thR"><option value="">Todos</option><option value="w">Victorias</option><option value="d">Empates</option><option value="l">Derrotas</option></select></label></div>';
+  h+='<div id="thBox">'+histBox(disp)+'</div><p class="cmeta" id="thEmpty" hidden>No hay partidos con ese filtro.</p>';
   h+='<div id="tPlayers"><p class="cmeta">Cargando sus jugadores…</p></div>';
   box.innerHTML=h;
+  var thf=function(){var c=(document.getElementById('thC')||{}).value||'',r=(document.getElementById('thR')||{}).value||'',vis=0;document.querySelectorAll('#thBox .hl li').forEach(function(li){var ok=(!c||li.dataset.c===c)&&(!r||li.dataset.r===r);li.hidden=!ok;if(ok)vis++});var e=document.getElementById('thEmpty');if(e)e.hidden=vis>0};
+  ['thC','thR'].forEach(function(id){var s=document.getElementById(id);if(s)s.onchange=thf});
   loadDet().then(function(D){
     var el=document.getElementById('tPlayers');if(!el||location.hash.indexOf('equipo/')<0)return;
     var P={},nm=0;ms.filter(pl).forEach(function(m){var d=D[m.id];if(!d)return;nm++;d.rv.forEach(function(x){var q=P[x[0]]=P[x[0]]||{n:x[0],l:{},a:0,g:0,s:0,mv:0,r:[]};q.a++;q.g+=x[2];q.s+=x[3];q.mv+=x[5];if(x[4])q.r.push(x[4]);q.l[x[1]]=(q.l[x[1]]||0)+1})});
@@ -962,8 +969,24 @@ window.nvTeam=function(name){
     var LN={g:'POR',d:'DEF',m:'MED',f:'DEL'},tg=ps.slice().sort(function(a,b){return b.g-a.g})[0],tb=ps.filter(function(q){return q.m!=null&&q.a>=Math.min(2,nm)}).sort(function(a,b){return b.m-a.m})[0];
     var o='<h3 class="grp">Sus jugadores contra Novaskil</h3>';
     o+='<div class="ldrs tld">'+(tg&&tg.g?'<article class="ldr"><span class="ldt">⚽ Nos ha marcado más</span><b class="ldn">'+esc(tg.n)+'</b><span class="ldv">'+tg.g+'</span></article>':'')+(tb?'<article class="ldr"><span class="ldt">★ Mejor nota contra nosotros</span><b class="ldn">'+esc(tb.n)+'</b><span class="ldv">'+f1(tb.m)+'</span></article>':'')+'</div>';
-    o+='<div class="scroll"><table class="tbl tpl"><thead><tr><th>Jugador</th><th>Línea</th><th>PJ</th><th>Goles</th><th>Asist.</th><th>MVP</th><th>Nota media</th></tr></thead><tbody>'+ps.map(function(q){return'<tr><td>'+esc(q.n)+'</td><td>'+(LN[q.pos]||'')+'</td><td>'+q.a+'</td><td>'+q.g+'</td><td>'+q.s+'</td><td>'+(q.mv||'')+'</td><td><span class="lr" style="background:'+rc(q.m)+'">'+f1(q.m)+'</span></td></tr>'}).join('')+'</tbody></table></div><p class="cmeta">Datos de los '+nm+' partido'+(nm>1?'s':'')+' que hemos jugado contra ellos con estadísticas.</p>';
+    var lines={};ps.forEach(function(q){lines[q.pos]=1});
+    o+='<div class="pfsel"><label class="sel">Ordenar por<select id="tpS"><option value="a">Partidos</option><option value="g">Goles</option><option value="s">Asistencias</option><option value="ga">Goles + asistencias</option><option value="mv">Veces MVP</option><option value="m">Nota media</option></select></label><label class="sel">Línea<select id="tpL"><option value="">Todas</option>'+['g','d','m','f'].filter(function(l){return lines[l]}).map(function(l){return'<option value="'+l+'">'+{g:'Porteros',d:'Defensas',m:'Medios',f:'Delanteros'}[l]+'</option>'}).join('')+'</select></label><label class="sel">Mostrar<select id="tpF"><option value="">Todos</option><option value="g">Con algún gol</option><option value="s">Con alguna asistencia</option><option value="mv">Que han sido MVP</option><option value="r8">Nota media 8 o más</option><option value="r7">Nota media 7 o más</option><option value="a2">2 partidos o más</option></select></label></div>';
+    o+='<div class="scroll"><table class="tbl tpl"><thead><tr><th>Jugador</th><th>Línea</th><th><button type="button" class="sortb" data-ts="a">PJ</button></th><th><button type="button" class="sortb" data-ts="g">Goles</button></th><th><button type="button" class="sortb" data-ts="s">Asist.</button></th><th><button type="button" class="sortb" data-ts="mv">MVP</button></th><th><button type="button" class="sortb" data-ts="m">Nota media</button></th></tr></thead><tbody id="tpBody"></tbody></table></div><p class="cmeta" id="tpEmpty" hidden>Ningún jugador cumple ese filtro.</p><p class="cmeta">Datos de los '+nm+' partido'+(nm>1?'s':'')+' que hemos jugado contra ellos con estadísticas.</p>';
     el.innerHTML=o;
+    var st={s:'a',l:'',f:''};
+    function draw(){
+      var list=ps.filter(function(q){if(st.l&&q.pos!==st.l)return false;var f=st.f;return!f||(f==='g'&&q.g>0)||(f==='s'&&q.s>0)||(f==='mv'&&q.mv>0)||(f==='r8'&&q.m>=8)||(f==='r7'&&q.m>=7)||(f==='a2'&&q.a>=2)});
+      var v=function(q){return st.s==='ga'?q.g+q.s:st.s==='m'?(q.m==null?-1:q.m):q[st.s]};
+      list.sort(function(a,b){return v(b)-v(a)||b.a-a.a||b.g-a.g});
+      document.getElementById('tpBody').innerHTML=list.map(function(q){return'<tr><td>'+esc(q.n)+'</td><td>'+(LN[q.pos]||'')+'</td><td>'+q.a+'</td><td>'+q.g+'</td><td>'+q.s+'</td><td>'+(q.mv||'')+'</td><td><span class="lr" style="background:'+rc(q.m)+'">'+f1(q.m)+'</span></td></tr>'}).join('');
+      document.getElementById('tpEmpty').hidden=list.length>0;
+      el.querySelectorAll('[data-ts]').forEach(function(b){b.classList.toggle('on',b.dataset.ts===st.s)});
+      document.getElementById('tpS').value=st.s;
+    }
+    el.onchange=function(e){if(e.target.id==='tpS')st.s=e.target.value;else if(e.target.id==='tpL')st.l=e.target.value;else if(e.target.id==='tpF')st.f=e.target.value;else return;draw()};
+    el.onclick=function(e){var b=e.target.closest('[data-ts]');if(!b)return;st.s=b.dataset.ts;draw()};
+    draw();
+
   });
 };
 window.nvGoComp=function(c){comp=COMPS.indexOf(c)>=0?c:'all';view='cla';var s=document.getElementById('compSel');if(s)s.value=comp;render()};
