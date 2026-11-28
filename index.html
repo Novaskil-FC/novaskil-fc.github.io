@@ -1466,7 +1466,7 @@ document.getElementById('dayClear').addEventListener('click',function(){day='';d
     x.fillStyle='#FF8A8F';x.font='700 30px '+OF;x.fillText(played?'RESULTADOS':anyP?'PARTIDOS':d===TODAY?'PARTIDOS DE HOY':'PRÓXIMOS PARTIDOS',tx,101);
     x.fillStyle='#FFFFFF';x.font='800 52px '+DF;x.fillText('NOVASKIL FC',tx,166);
     x.fillStyle='#E8DAD6';x.font='600 34px '+BF;x.fillText(dl(d,true),tx,214);
-    var n=Math.max(1,ms.length),cols=HZ&&n>3?2:1,rows=Math.ceil(n/cols),gap=22,top=HZ?250:280,bot=H-(HZ?100:110);
+    var n=Math.max(1,ms.length),cols=1,rows=Math.ceil(n/cols),gap=22,top=HZ?245:280,bot=H-(HZ?100:110);
     var cw=cols===2?(W-2*M-gap)/2:Math.min(W-2*M,HZ?1400:W-2*M),rh=Math.min(200,(bot-top-gap*(rows-1))/rows);
     var y0=top+((bot-top)-(rh*rows+gap*(rows-1)))/2,xs0=(W-(cw*cols+gap*(cols-1)))/2;
     if(!ms.length){x.fillStyle='#E8DAD6';x.font='600 36px '+BF;x.textAlign='center';x.fillText('No hay partidos este día',W/2,H/2);x.textAlign='left'}
@@ -1475,18 +1475,23 @@ document.getElementById('dayClear').addEventListener('click',function(){day='';d
       if(cols===2&&ms.length%2&&i===ms.length-1)col=0.5;
       var m=ms[i],bx=xs0+col*(cw+gap),y=y0+row*(rh+gap),H0=m.home!==false,hn=H0?'Novaskil FC':m.rival,an=H0?m.rival:'Novaskil FC',P=pl(m),k=P?rs(m):'';
       rr(x,bx,y,cw,rh,26);x.fillStyle='rgba(255,255,255,.08)';x.fill();x.strokeStyle=P?(k==='w'?'#2FB36A':k==='d'?'#9A928F':'#E0565C'):'rgba(255,255,255,.18)';x.lineWidth=P?4:2;x.stroke();
-      var s=rh/200,mid=bx+cw/2;
-      x.font='700 '+Math.round(26*s+4)+'px '+OF;var lab=m.comp+(m.time?'  ·  '+m.time:'');var lw=x.measureText(lab).width+36;
-      rr(x,mid-lw/2,y+14*s,lw,40*s+6,20*s+3);x.fillStyle='#D7262D';x.fill();x.fillStyle='#fff';x.textAlign='center';x.fillText(lab,mid,y+14*s+(40*s+6)/2+(26*s+4)*.36);
-      var cy=y+rh*.6,ls=Math.round(84*s),nameMax=cw/2-30-ls-20-110*Math.max(s,.7);
-      for(var side=0;side<2;side++){var nm=side?an:hn,us=/novaskil/i.test(nm),lx=side?bx+cw-30-ls:bx+30;
+      var s=rh/200,mid,cy,ls,fN,fS,fV,aL,aR;
+      if(HZ){var PW=Math.min(300,cw*.22),ph=rh-28;rr(x,bx+16,y+14,PW,ph,18);x.fillStyle='#D7262D';x.fill();x.fillStyle='#fff';x.textAlign='center';
+        var f1s=Math.round(Math.min(34,rh*.2)),f2s=Math.round(Math.min(46,rh*.27));x.font='700 '+f1s+'px '+OF;x.fillText(m.comp,bx+16+PW/2,y+rh/2-f1s*.15);
+        x.font='700 '+f2s+'px '+OF;x.fillText(m.time||'',bx+16+PW/2,y+rh/2+f2s*.95);
+        aL=bx+16+PW+30;aR=bx+cw-30;mid=(aL+aR)/2;cy=y+rh/2;ls=Math.round(Math.min(110,rh*.6));fN=Math.round(Math.min(42,rh*.25));fS=Math.round(Math.min(96,rh*.52));fV=Math.round(Math.min(60,rh*.34))}
+      else{x.font='700 '+Math.round(26*s+4)+'px '+OF;var lab=m.comp+(m.time?'  ·  '+m.time:'');var lw=x.measureText(lab).width+36;mid=bx+cw/2;
+        rr(x,mid-lw/2,y+14*s,lw,40*s+6,20*s+3);x.fillStyle='#D7262D';x.fill();x.fillStyle='#fff';x.textAlign='center';x.fillText(lab,mid,y+14*s+(40*s+6)/2+(26*s+4)*.36);
+        aL=bx+30;aR=bx+cw-30;cy=y+rh*.6;ls=Math.round(84*s);fN=Math.round(32*s+6);fS=Math.round(70*s+6);fV=Math.round(44*s+4)}
+      var nameMax=(aR-aL)/2-ls-20-fS*1.3;
+      for(var side=0;side<2;side++){var nm=side?an:hn,us=/novaskil/i.test(nm),lx=side?aR-ls:aL;
         var sl=LM[nk(nm)],li=sl?await img('logos/'+sl+'.png'):null;
         if(us&&!li)li=await img('icon-180.png');
         if(li){x.drawImage(li,lx,cy-ls/2,ls,ls)}else{x.beginPath();x.arc(lx+ls/2,cy,ls/2,0,7);x.fillStyle='rgba(255,255,255,.15)';x.fill();x.fillStyle='#fff';x.font='800 '+Math.round(ls*.45)+'px '+DF;x.textAlign='center';x.fillText(String(nm).charAt(0).toUpperCase(),lx+ls/2,cy+ls*.16)}
-        var t=fit(x,nm,nameMax,Math.round(32*s+6),us?'800':'600',us?DF:BF);x.fillStyle=us?'#FFFFFF':'#E8DAD6';x.textAlign=side?'right':'left';x.fillText(t,side?lx-20:lx+ls+20,cy+(32*s+6)*.35)}
+        var t=fit(x,nm,nameMax,fN,us?'800':'600',us?DF:BF);x.fillStyle=us?'#FFFFFF':'#E8DAD6';x.textAlign=side?'right':'left';x.fillText(t,side?lx-20:lx+ls+20,cy+fN*.35)}
       x.textAlign='center';
-      if(P){var hs=H0?m.gf:m.ga,as=H0?m.ga:m.gf;x.font='700 '+Math.round(70*s+6)+'px '+OF;x.fillStyle='#FFFFFF';x.fillText(hs+' - '+as,mid,cy+(70*s+6)*.36)}
-      else{x.font='800 '+Math.round(44*s+4)+'px '+DF;x.fillStyle='#FF8A8F';x.fillText('VS',mid,cy+(44*s+4)*.36)}
+      if(P){var hs=H0?m.gf:m.ga,as=H0?m.ga:m.gf;x.font='700 '+fS+'px '+OF;x.fillStyle='#FFFFFF';x.fillText(hs+' - '+as,mid,cy+fS*.36)}
+      else{x.font='800 '+fV+'px '+DF;x.fillStyle='#FF8A8F';x.fillText('VS',mid,cy+fV*.36)}
       x.textAlign='left'}
     x.fillStyle='rgba(255,255,255,.7)';x.font='600 28px '+BF;x.textAlign='center';x.fillText('TikTok @Novaskilfc  ·  X @NovaskilFC  ·  novaskil-fc.github.io',W/2,H-(HZ?45:50));x.textAlign='left';
   }
