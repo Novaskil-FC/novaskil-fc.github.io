@@ -549,6 +549,23 @@ h3.grp{letter-spacing:.01em}
 .dimg-c{margin:.8rem 0;display:flex;flex-wrap:wrap;gap:.8rem}
 .dimg-p canvas{display:block;width:100%;height:auto;border-radius:14px;background:#1B1514}
 .dimg-b{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.9rem}
+.tchb{position:relative;z-index:1;margin-top:.6rem;background:none;border:1px solid rgba(255,255,255,.35);color:#FBF8F6;border-radius:99px;padding:.3rem .9rem;font:600 .85rem var(--body);cursor:pointer}.tchb:hover{border-color:#fff;background:rgba(255,255,255,.08)}
+.chg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
+.chc{background:var(--card);border-radius:18px;padding:1rem 1.2rem;scroll-margin-top:90px;transition:box-shadow .3s}.chc.flash{box-shadow:0 0 0 3px var(--accent)}
+.chc header{display:flex;align-items:center;gap:.8rem;margin-bottom:.6rem}.chc header b{display:block;font:800 1rem var(--display)}.chi{display:grid;place-items:center;width:44px}
+.che{border-top:1px solid var(--line);padding:.6rem 0 .2rem}.che p{margin:.2rem 0}
+.chl{display:inline-block;font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+.chps{display:flex;flex-wrap:wrap;gap:.4rem}
+.chp{display:inline-block;background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:.2rem .7rem;font-size:.9rem;font-weight:600;color:inherit;text-decoration:none}a.chp:hover{border-color:var(--accent)}
+.lgg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:1rem}
+.lgc{background:linear-gradient(135deg,#1B1514,#4A1214);color:#FBF8F6;border-radius:20px;padding:1.2rem 1.3rem}.lgc h3{margin:.2rem 0 .4rem}.lgc h3 a,.lgc h3 span{color:#fff;background:none;border:none;padding:0;font-size:1.3rem}.lgc p{margin:.3rem 0 0;color:#E8DAD6}
+.lgk{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#FF8A8F}
+.lgr{list-style:none;margin:0;padding:0;display:grid;gap:.5rem}
+.lgr li{display:grid;grid-template-columns:auto auto auto 1fr;align-items:center;gap:.4rem .8rem;background:var(--card);border-radius:14px;padding:.6rem .9rem}
+.lgr .cmeta{grid-column:1/-1}
+@media (min-width:700px){.lgr .cmeta{grid-column:auto}}
+.ptit{display:flex;flex-wrap:wrap;gap:.5rem;margin:-.4rem 0 1rem}
+.ptc{display:inline-flex;align-items:center;gap:.4rem;background:var(--card);border-radius:99px;padding:.25rem .8rem .25rem .4rem;font-weight:700;font-size:.9rem;color:inherit;text-decoration:none}
 .tlg{width:28px;height:28px;object-fit:contain;flex:none;display:inline-grid;place-items:center}
 .tlx{border-radius:50%;background:var(--line);font:800 .8rem var(--display);color:var(--muted)}
 .tt{display:inline-flex;align-items:center;gap:.6rem}
@@ -611,6 +628,7 @@ h3.grp{letter-spacing:.01em}
       <a href="#noticias">Noticias</a>
       <a href="#fichajes">Fichajes</a>
       <a href="#vitrina">Vitrina</a>
+      <a href="#leyendas">Leyendas</a>
       <a href="#unete">Únete</a>
     <a href="#alineaciones" class="owner-only" hidden="">Alineaciones</a>
     </nav>
@@ -725,6 +743,8 @@ h3.grp{letter-spacing:.01em}
       <h2 id="h-tro">Vitrina de trofeos</h2>
       <p class="lead" id="troSum" data-render=""></p>
       <div class="vit"><div id="troCase" data-render=""></div></div>
+      <h3 class="grp" id="troChampsH">Los campeones de cada título</h3>
+      <div id="troChamps" data-render=""></div>
       <div class="owner-only box" hidden="">
         <p><strong>Añadir trofeo</strong> (solo lo ves tú). Para un trofeo que ya tienes, usa "+1" en la vitrina.</p>
         <form id="troForm" class="addf">
@@ -735,6 +755,12 @@ h3.grp{letter-spacing:.01em}
           <button class="btn main" type="submit">Añadir trofeo</button>
         </form>
       </div>
+    </section>
+
+    <section data-v="leyendas" id="leyendas" aria-labelledby="h-ley">
+      <h2 id="h-ley">Leyendas del club</h2>
+      <p class="lead">Los jugadores que han hecho grande a Novaskil FC: los que han levantado títulos y los que tienen los récords del club.</p>
+      <div id="legBox" data-render=""></div>
     </section>
 
     <section data-v="alineaciones" id="alineaciones" aria-labelledby="h-al">
@@ -1118,6 +1144,8 @@ function render(){
   renderNews();
   renderMoves();
   renderTrophies();
+  renderChamps();
+  renderLegends();
   renderAl();
   renderSquad();
   nowBox();
@@ -1203,6 +1231,25 @@ function troIcon(k,h){
   b+='<path d="M13 59h34l3 9H10z" fill="url(#'+id+'b)"/><rect x="8" y="68" width="44" height="9" rx="2" fill="url(#'+id+'b)"/><rect x="20" y="70.5" width="20" height="4" rx="1" fill="'+F+'" opacity=".9"/>';
   return'<svg class="tsvg" viewBox="0 0 60 80" height="'+h+'" aria-hidden="true">'+d+b+'</svg>';
 }
+function troEds(t){var n=t.c||1,e=(t.ed||[]).slice();while(e.length<n)e.push({});return e.slice(0,Math.max(n,e.length))}
+function plLink(n){var known=(state.squad||[]).some(function(q){return q.n===n})||state.matches.some(function(m){return(m.lu||[]).some(function(x){return x.n===n})});return known?'<a class="chp" href="#jugador/'+encodeURIComponent(n)+'">'+esc(n)+'</a>':'<span class="chp">'+esc(n)+'</span>'}
+function titlesOf(n){var o=[];(state.trophies||[]).forEach(function(t){troEds(t).forEach(function(e,i){if((e.pl||[]).indexOf(n)>=0)o.push({t:t,e:e,i:i})})});return o}
+function edLabel(t,e,i){return e.y?e.y:(t.c||1)>1?'Título '+(i+1):''}
+function renderChamps(){var box=document.getElementById('troChamps');if(!box)return;var ts=state.trophies||[];
+  document.getElementById('troChampsH').hidden=!ts.length;
+  box.innerHTML='<div class="chg">'+ts.map(function(t){var eds=troEds(t);return'<article class="chc" id="champ-'+esc(t.id)+'"><header><span class="chi">'+troIcon(t.k,46)+'</span><div><b>'+esc(t.n)+'</b><span class="cmeta">'+esc(t.p)+((t.c||1)>1?' · '+t.c+' títulos':'')+'</span></div></header>'+eds.map(function(e,i){var lb=edLabel(t,e,i);return'<div class="che">'+(lb?'<span class="chl">'+esc(lb)+'</span>':'')+((e.pl||[]).length?'<div class="chps">'+e.pl.map(plLink).join('')+'</div>':'<p class="cmeta">Plantilla campeona por confirmar.</p>')+'</div>'}).join('')+'</article>'}).join('')+'</div>'}
+function renderLegends(){var box=document.getElementById('legBox');if(!box)return;var h='';
+  var L=state.legends||[];
+  if(L.length)h+='<div class="lgg">'+L.map(function(l){var tt=titlesOf(l.n);return'<article class="lgc"><span class="lgk">'+esc(l.t||'Leyenda')+'</span><h3>'+plLink(l.n)+'</h3>'+(l.d?'<p>'+esc(l.d)+'</p>':'')+(tt.length?'<p class="lgt">🏆 '+tt.length+' título'+(tt.length>1?'s':'')+'</p>':'')+'</article>'}).join('')+'</div>';
+  var TC={};(state.trophies||[]).forEach(function(t){troEds(t).forEach(function(e,i){(e.pl||[]).forEach(function(n){(TC[n]=TC[n]||[]).push(t.n+(edLabel(t,e,i)?' ('+edLabel(t,e,i)+')':''))})})});
+  var tl=Object.keys(TC).sort(function(a,b){return TC[b].length-TC[a].length||a.localeCompare(b)});
+  h+='<h3 class="grp">Más títulos con Novaskil</h3>';
+  h+=tl.length?'<ol class="lgr">'+tl.map(function(n,i){return'<li><span class="rk">'+(i+1)+'</span><span class="lgn">'+plLink(n)+'</span><b class="lgc2">🏆 '+TC[n].length+'</b><span class="cmeta">'+esc(TC[n].join(' · '))+'</span></li>'}).join('')+'</ol>':'<p class="cmeta">Cuando estén confirmadas las plantillas campeonas de cada título, aquí saldrán los jugadores que más han ganado.</p>';
+  var P={};state.matches.filter(function(m){return pl(m)&&m.date<=TODAY}).forEach(function(m){(m.lu||[]).forEach(function(x){var q=P[x.n]=P[x.n]||{n:x.n,a:0,g:0,s:0,mv:0};q.a++;q.g+=x.g||0;q.s+=x.a||0});if(m.mvp&&P[m.mvp])P[m.mvp].mv++});
+  var ps=Object.keys(P).map(function(k){return P[k]});
+  function top(ttl,ic,k,u){var a=ps.filter(function(q){return q[k]>0}).sort(function(x,y){return y[k]-x[k]||y.a-x.a}).slice(0,5);if(!a.length)return'';return'<article class="ldr"><span class="ldt">'+ic+' '+ttl+'</span><a class="ldn" href="#jugador/'+encodeURIComponent(a[0].n)+'">'+esc(a[0].n)+'</a><span class="ldv">'+a[0][k]+' '+u+'</span><ol>'+a.slice(1).map(function(q,i){return'<li><a href="#jugador/'+encodeURIComponent(q.n)+'">'+(i+2)+'. '+esc(q.n)+'</a><b>'+q[k]+'</b></li>'}).join('')+'</ol></article>'}
+  h+='<h3 class="grp">Récords históricos del club</h3><div class="ldrs">'+top('Más partidos','👕','a','partidos')+top('Más goles','⚽','g','goles')+top('Más asistencias','👟','s','asistencias')+top('Más veces MVP','⭐','mv','veces')+'</div><p class="cmeta">Con todos los partidos oficiales registrados en la web, incluidos los jugadores que ya no están.</p>';
+  box.innerHTML=h}
 function renderTrophies(){
   var ts=state.trophies||[],tot=ts.reduce(function(a,t){return a+(t.c||0)},0),ord=['PS5','PS4'];
   var byP={};ts.forEach(function(t){byP[t.p]=(byP[t.p]||0)+(t.c||1)});
@@ -1213,8 +1260,8 @@ function renderTrophies(){
   function stars(n){var s='';for(var i=0;i<Math.min(n,10);i++)s+='<i>★</i>';return n>1?'<div class="tstars" aria-label="'+n+' veces">'+s+'</div>':''}
   function edit(t){return canEdit?'<div class="ta"><button class="xbtn" data-tro-inc="'+t.id+'">+1</button><button class="xbtn" data-tro-del="'+t.id+'">Borrar</button></div>':''}
   var h='';
-  feat.forEach(function(t){h+='<article class="tfeat"><div class="tglow"></div><div class="tfi">'+troIcon(t.k,190)+'</div><div class="tft"><span class="tplat">'+esc(t.p)+'</span><h3>'+esc(t.n)+'</h3><p>Campeones del mundo: Novaskil FC fue el mejor equipo de '+esc(t.p)+'.</p>'+(t.c>1?'<b class="tcount">x'+t.c+'</b>':'')+edit(t)+'</div></article>'});
-  h+='<div class="tgrid">'+rest.map(function(t){return'<article class="tcase '+(t.k==='cup2'?'silver':'gold')+'"><span class="tplat">'+esc(t.p)+'</span>'+(t.c>1?'<b class="tcount">x'+t.c+'</b>':'')+'<div class="tglow"></div><div class="tci">'+troIcon(t.k,150)+'</div><div class="tped"></div><div class="tplq"><b>'+esc(t.n)+'</b>'+stars(t.c||1)+'</div>'+edit(t)+'</article>'}).join('')+'</div>';
+  feat.forEach(function(t){h+='<article class="tfeat"><div class="tglow"></div><div class="tfi">'+troIcon(t.k,190)+'</div><div class="tft"><span class="tplat">'+esc(t.p)+'</span><h3>'+esc(t.n)+'</h3><p>Campeones del mundo: Novaskil FC fue el mejor equipo de '+esc(t.p)+'.</p><button type="button" class="tchb" data-champ="'+esc(t.id)+'">Ver campeones</button>'+(t.c>1?'<b class="tcount">x'+t.c+'</b>':'')+edit(t)+'</div></article>'});
+  h+='<div class="tgrid">'+rest.map(function(t){return'<article class="tcase '+(t.k==='cup2'?'silver':'gold')+'"><span class="tplat">'+esc(t.p)+'</span>'+(t.c>1?'<b class="tcount">x'+t.c+'</b>':'')+'<div class="tglow"></div><div class="tci">'+troIcon(t.k,150)+'</div><div class="tped"></div><div class="tplq"><b>'+esc(t.n)+'</b>'+stars(t.c||1)+'</div><button type="button" class="tchb" data-champ="'+esc(t.id)+'">Ver campeones</button>'+edit(t)+'</article>'}).join('')+'</div>';
   document.getElementById('troCase').innerHTML=ts.length?h:'<p class="lead">Aún no hay trofeos en la vitrina.</p>';
 }
 var SL=['Portero','Defensa 1','Defensa 2','Defensa 3','Carrilero izq.','MC 1','MC 2','Carrilero der.','MCO','DC 1','DC 2'];
@@ -1341,6 +1388,7 @@ window.nvPlayer=function(n){
   function t(b,l,c){return'<div class="tile'+(c?' '+c:'')+'"><b>'+b+'</b><span>'+l+'</span></div>'}
   h+='<header class="phd"><span class="ppos">'+esc(pos)+'</span><div><h2>'+esc(n)+'</h2><p class="cmeta">'+esc(PN[pos]||'')+(sq?'':' · ya no está en la plantilla')+'</p></div>'+(sq&&sq.id?'<a class="btn" href="https://www.eafcstats.es/player/'+esc(sq.id)+'" target="_blank" rel="noopener">Ver en EA FC Stats</a>':'')+'</header>';
   if(!d.ms.length){box.innerHTML=h+'<p class="lead">Todavía no tiene partidos registrados.</p>';return}
+  var tt=titlesOf(n);if(tt.length)h+='<div class="ptit">'+tt.map(function(o){var lb=edLabel(o.t,o.e,o.i);return'<a class="ptc" href="#vitrina">'+troIcon(o.t.k,26)+'<span>'+esc(o.t.n)+(lb?' <span class="cmeta">'+esc(lb)+'</span>':'')+'</span></a>'}).join('')+'</div>';
   h+='<div class="tiles ptl">'+t(s.a,'Partidos')+t(s.g,'Goles','tw')+t(s.s,'Asistencias','tw')+t(s.mvp,'Veces MVP')+t(f1(m),'Nota media')+t(Math.round(s.w/s.a*100)+'%','Victorias con él')+'</div>';
   var PO=Object.keys(s.pos).sort(function(a,b){return s.pos[b]-s.pos[a]});
   h+='<h3 class="grp">Posiciones en las que ha jugado</h3><div class="posb">'+PO.map(function(k){return'<div class="pbi"><span class="pbl"><b>'+esc(k)+'</b> '+esc(PN[k]||'')+'</span><span class="pbt"><i style="width:'+(s.pos[k]/s.a*100).toFixed(1)+'%"></i></span><span class="pbn">'+s.pos[k]+' partido'+(s.pos[k]>1?'s':'')+'</span></div>'}).join('')+'</div>';
@@ -1502,6 +1550,7 @@ document.getElementById('dayClear').addEventListener('click',function(){day='';d
     document.getElementById('dimgSh').hidden=!(navigator.canShare&&window.File);
     if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');draw(sel.value)}
   document.getElementById('dayImgBtn').addEventListener('click',open);
+  document.addEventListener('click',function(e){var b=e.target.closest('[data-champ]');if(!b)return;var c=document.getElementById('champ-'+b.dataset.champ);if(c){c.scrollIntoView({behavior:'smooth',block:'start'});c.classList.add('flash');setTimeout(function(){c.classList.remove('flash')},1600)}});
   document.getElementById('dimgClose').addEventListener('click',function(){dlg.close()});
   dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close()});
   sel.addEventListener('change',function(){draw(sel.value)});
@@ -1530,7 +1579,7 @@ render();
 
 <script>
 (function(){
-var V=['inicio','plantilla','partidos','noticias','fichajes','vitrina','alineaciones','unete'],first=true;
+var V=['inicio','plantilla','partidos','noticias','fichajes','vitrina','leyendas','alineaciones','unete'],first=true;
 function lastSec(){try{var o=JSON.parse(localStorage.getItem('nvsec')||'null');return o&&Date.now()-o.t<20000?o.h:''}catch(e){return ''}}
 window.nvMark=function(){try{var h=(location.hash||'').slice(1);localStorage.setItem('nvsec',JSON.stringify({h:V.indexOf(h)<0?'inicio':h,t:Date.now()}))}catch(e){}};
 var mb=document.getElementById('menuBtn'),hd=document.querySelector('header.top');
